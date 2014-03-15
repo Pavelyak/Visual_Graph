@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<map>
+	<node id="Teg" x="1720099" y="7072732">
+		<road to="Tegsbron" speed="50" />
+		<road to="TreKorvar" speed="110" />
+	</node>
+	<node id="Tegsbron" x="1720359" y="7074215">
+		<road to="Teg" speed="110" />
+		<road to="TreKorvar" speed="50" />
+	</node>
+	<node id="TreKorvar" x="1721857" y="7072464">
+		<road to="Tegsbron" speed="30" />
+		<road to="Teg" speed="30" />
+	</node>
+</map>
