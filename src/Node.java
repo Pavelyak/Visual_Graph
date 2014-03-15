@@ -13,22 +13,18 @@ public class Node {
     }
 
     public void printLinks(){                                       // печатает id всех входящих и выходящих вершины
-      for(int i = 0; i < listIn.size(); i++ ){                      // проходим по всем элементам массива входящих вершин
+      for (int i = 0; i < listIn.size(); i++ ){                      // проходим по всем элементам массива входящих вершин
           System.out.println(id + " in = " + listIn.get(i).id);
       }
-      for(int i = 0; i < listOut.size(); i++ ){
+      for (int i = 0; i < listOut.size(); i++ ){
           System.out.println(id + " out = " + listOut.get(i).id);
       }
     }
-
-
 
     public void addOut (Node NodeFinish){          // функция, добавляющая связи между двумя вершинами
         listOut.add(NodeFinish);                   // добавляем out вершину NodeFinish  в массив искомого Node
         NodeFinish.listIn.add(this);               // заносим искомую вершину в in массив конечной вершины NodeFinish
     }
-
-
 
     public int id; // номер вершины
 
