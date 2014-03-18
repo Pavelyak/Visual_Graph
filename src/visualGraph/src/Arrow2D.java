@@ -69,7 +69,7 @@ public class Arrow2D {
             angle = Math.PI/2.0*3.0;
          }
       }
-      else if (dy == 0.0) { // Horisontal
+      else if (dy == 0.0   ) { // Horisontal
          if (dx > 0.0) { // Points right
             angle = 0.0;
          }
