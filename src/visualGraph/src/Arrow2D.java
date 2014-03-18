@@ -55,7 +55,7 @@ public class Arrow2D {
    private static double calculateAngle(double x1, double y1,
                                        double x2, double y2) {
       double dx = x2 - x1;
-      double dy = y2 - y1;
+      double dy = y2 - y1 ;
       double angle = 0.0; // Horisontal to the right
 
       if (dx == 0.0) { // Vertical
