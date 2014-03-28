@@ -12,7 +12,7 @@ public class GNode extends Node {
     public GNode(Graphics2D g){
         super();
         Random rand = new Random();
-        this.x = rand.nextInt(1000); // подумать над свяeeeeeзью  с окнами, рисуемыми в GUI
+        this.x = rand.nextInt(1000); // подумать над связью  с окнами, рисуемыми в GUI
         this.y = rand.nextInt(1000); //подумать аналогично
     }
 
