@@ -1,16 +1,24 @@
 import java.util.*;
 
 /**
- * Created by Ринат on 07.03.28.
- *
+ * Created by Ринат on 07.03.14.
+ * Updated by P.Yak. on 28.03.14
  */
 
 public class Node {
-    public Node(int id){ // конструктор, задаем номер вершины, создаем список входящих и выходящих вершин.
-        this.id = id;
+    private static int  nodesCount=0; // Счетчик,
+    public Node(){
+        this.id = nodesCount;
+        nodesCount++;
         listIn = new ArrayList<Node>();
         listOut = new ArrayList<Node>();
     }
+
+    /*public Node(int id){ // конструктор, задаем номер вершины, создаем список входящих и выходящих вершин.
+        this.id = id;
+        listIn = new ArrayList<Node>();
+        listOut = new ArrayList<Node>();
+    }*/
 
     public void printLinks(){                                       // печатает id всех входящих и выходящих вершины
       for (int i = 0; i < listIn.size(); i++ ){                      // проходим по всем элементам массива входящих вершин
