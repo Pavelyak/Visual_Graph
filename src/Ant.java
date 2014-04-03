@@ -6,5 +6,4 @@
 
 public class Ant {
     private int currentNode;
-    private int
 }

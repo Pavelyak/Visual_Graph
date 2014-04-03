@@ -7,12 +7,13 @@ public class Graph{
 
     // объявляем конструктор, создающий тестовый граф.
     public Graph(int NodesSum, int LinksSum ){
+
         NodesArray = new Node[NodesSum];
         this.NodesSum = NodesSum;
         this.LinksSum = LinksSum;
 
         for(int id = 0; id <= (NodesSum -1); id++){              //создаем заданное количество тестовых вершин
-            NodesArray[id] = new Node(id);
+            NodesArray[id] = new Node();
         }
         for(int i = 1; i<= LinksSum;i++){                   //присваиваем случайные связи вершинам
             Random rand = new Random();

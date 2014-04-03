@@ -6,7 +6,13 @@ import java.util.*;
  */
 
 public class Node {
-    private static int  nodesCount=0; // Счетчик,
+
+    private static int  nodesCount=0; // Счетчик числа вершин
+    public int id; // номер вершины
+    ArrayList<Node> listIn; // динамический массив ссылок на входящие вершин.
+    ArrayList<Node> listOut; // динамический массив ссылок на исходящие вершины.
+
+    //конструктор
     public Node(){
         this.id = nodesCount;
         nodesCount++;
@@ -14,11 +20,6 @@ public class Node {
         listOut = new ArrayList<Node>();
     }
 
-    /*public Node(int id){ // конструктор, задаем номер вершины, создаем список входящих и выходящих вершин.
-        this.id = id;
-        listIn = new ArrayList<Node>();
-        listOut = new ArrayList<Node>();
-    }*/
 
     public void printLinks(){                                       // печатает id всех входящих и выходящих вершины
       for (int i = 0; i < listIn.size(); i++ ){                      // проходим по всем элементам массива входящих вершин
@@ -33,11 +34,4 @@ public class Node {
         listOut.add(NodeFinish);                   // добавляем out вершину NodeFinish  в массив искомого Node
         NodeFinish.listIn.add(this);               // заносим искомую вершину в in массив конечной вершины NodeFinish
     }
-
-    public int id; // номер вершины
-
-    ArrayList<Node> listIn; // динамический массив ссылок на входящие вершин.
-    ArrayList<Node> listOut; // динамический массив ссылок на исходящие вершины.
-
-
 }
