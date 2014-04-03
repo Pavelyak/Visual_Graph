@@ -17,7 +17,7 @@ public class GNode extends Node {
     }
 
     public void draw(){
-
+//Ринат, написи отрисовку этой штуки в окнище
 
 
     }
