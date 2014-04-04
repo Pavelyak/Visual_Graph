@@ -7,7 +7,10 @@ import java.lang.*;
  */
 public class Driver {
     public static void main(String [ ] args){
-        Graph Test = new Graph(10,15);
-        Test.printGraphStat();
+        GGraph Test = new GGraph(10,54);
+
+
+
+        }
     }
-}
+

@@ -9,16 +9,25 @@ public class GNode extends Node {
     private int x; //координата х точки
     private int y; // координата у точки
 
-    public GNode(Graphics2D g){
+    public GNode(){
         super();
         Random rand = new Random();
-        this.x = rand.nextInt(1000); // подумать над связью  с окнами, рисуемыми в GUI
-        this.y = rand.nextInt(1000); //подумать аналогично
+        this.x = rand.nextInt(800); // подумать над связью  с окнами, рисуемыми в GUI
+        this.y = rand.nextInt(600); //подумать аналогично
     }
 
     public void draw(){
 //Ринат, написи отрисовку этой штуки в окнище
 
+    }
+    public void print(){
+        System.out.println("My ID  = " + id);
+        System.out.println("X = " + x);
+        System.out.println("Y = " + y);
 
+    }
+
+    public void paint(Graphics g){
+        g. fillOval(this.x, this.y, 4, 4);
     }
 }

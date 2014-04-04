@@ -6,7 +6,7 @@ import java.util.Random;
 public class Graph{
 
     // объявляем конструктор, создающий тестовый граф.
-    public Graph(int NodesSum, int LinksSum ){
+   /* public Graph(int NodesSum, int LinksSum ){
 
         NodesArray = new Node[NodesSum];
         this.NodesSum = NodesSum;
@@ -33,6 +33,6 @@ public class Graph{
     }
     Node[] NodesArray;            //создаем массив вершинок
     public static int NodesSum;
-    public static int LinksSum;
+    public static int LinksSum;*/
 }
 

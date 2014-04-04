@@ -18,6 +18,8 @@ public class AppWindow extends Frame {
         appwin.setSize(800,600);
         appwin.setTitle("An Ant visualization");
         appwin.setVisible(true);
+
+        GNode gNode = new GNode();
     }
 
 
