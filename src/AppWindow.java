@@ -24,7 +24,7 @@ public class AppWindow extends Frame {
 
 
 
-    class MyWindowAdapter extends WindowAdapter {    // закрытие окна при нажатии на крестик
+    class MyWindowAdapter extends WindowAdapter {    // закрытие окнаа при нажатии на крестик
         public void windowClosing(WindowEvent we) {
             System.exit(0);
         }
