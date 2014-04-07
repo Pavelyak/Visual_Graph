@@ -7,7 +7,7 @@ import java.util.Random;
  * Created by Ринат on 07.04.14.
  */
 public class GGraph {
-    private GNode[] gNodesArray;                                // массив вершин
+    private GNode[] gNodesArray;                                //  массив вершин
     private  int nodesCount;
     private  int linksCount;
 
