@@ -1,33 +1,58 @@
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 /**
  * Created by Павел Яковлев on 28.03.14.
  * Класс, создающий вершинки, подготовленные для отрисовки на графе. Задаются координаты вершинок
  */
 
-public class GNode extends Node {
-    private int x; //координата х точки
-    private int y; // координата у точки
+public class GNode  {
+    
+    private static int  nodesCount = 0; // Счетчик числа вершин
+    public int id; // номер вершины
+    private int x; //координата х вершины
+    private int y; // координата у вершины
+    ArrayList<GNode> listIn; // динамический массив ссылок на входящие вершин.
+    ArrayList<GNode> listOut; // динамический массив ссылок на исходящие вершины.
 
-    public GNode(){
-        super();
-        Random rand = new Random();
-        this.x = rand.nextInt(800); // подумать над связью  с окнами, рисуемыми в GUI
-        this.y = rand.nextInt(600); //подумать аналогично
+    //конструктор
+    public GNode(int x, int y){
+        this.id = nodesCount;
+        nodesCount++;
+        listIn = new ArrayList<GNode>();
+        listOut = new ArrayList<GNode>();
+        this.x = x;
+        this.y = y;
+    }
+    // возвращают координаты GNode
+    public int getX(){
+        return this.x;
     }
 
-    public void draw(){
-//Ринат, написи отрисовку этой штуки в окнище
-
+    public int getY(){
+        return this.y;
     }
+
+
+    public void printLinks(){                                  // печатает id всех входящих и выходящих вершины
+        for (int i = 0; i < listIn.size(); i++ ){
+            System.out.println(id + " in = " + listIn.get(i).id);
+        }
+        for (int i = 0; i < listOut.size(); i++ ){
+            System.out.println(id + " out = " + listOut.get(i).id);
+        }
+    }
+
+    public void addOut (GNode gNodeFinish){          // функция, добавляющая связи между двумя вершинами
+        listOut.add(gNodeFinish);                   // добавляем out вершину NodeFinish  в массив искомого Node
+        gNodeFinish.listIn.add(this);               // заносим искомую вершину в in массив конечной вершины NodeFinish
+    }
+
+    // пишет статистику, которая нам не особо нужна сейчас
     public void print(){
         System.out.println("My ID  = " + id);
         System.out.println("X = " + x);
         System.out.println("Y = " + y);
-
     }
 
-    public void paint(Graphics g){
-        g. fillOval(this.x, this.y, 4, 4);
-    }
 }
