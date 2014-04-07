@@ -2,10 +2,6 @@
  * Created by Ринат on 07.04.14.
  */
 
-import visualGraph.src.Arrow2D;
-import visualGraph.src.GraphNode;
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
