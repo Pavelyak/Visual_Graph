@@ -9,17 +9,17 @@ import java.lang.*;
  */
 public class Driver {
 
-    private Writer writer; // класс, занимающийся отрисовкой графа
+    private GraphWriter graphWriter; // класс, занимающийся отрисовкой графа
 
     public  Driver (GGraph graph) {
         int fringe = 40; // размер рамки
 
-        // создаем writer
-        writer = new Writer(800, 600, fringe, graph);
+        // создаем graphWriter
+        graphWriter = new GraphWriter(800, 600, fringe, graph);
 
         // Panel  - в ней будет отрисовываться сам граф
         JPanel graphPanel = new JPanel(new BorderLayout());
-        graphPanel.add(writer, BorderLayout.CENTER);
+        graphPanel.add(graphWriter, BorderLayout.CENTER);
 
         // оконное приложение, с которым происходит работа
         AppWindow appwin = new AppWindow();           // создание окна
