@@ -31,7 +31,7 @@ public class Driver {
 
 
     public static void main(String [ ] args){
-        GGraph testGGraph = new GGraph(10,54); // создание тестового графа
+        GGraph testGGraph = new GGraph(10,20); // создание тестового графа
         new Driver(testGGraph);                // визуализация тест. графа
         }
     }
