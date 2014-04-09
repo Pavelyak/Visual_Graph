@@ -37,6 +37,10 @@ public class GGraph {
         return this.gNodesArray[id];
     }
 
+    public int getgNodesArraySize(){
+        return gNodesArray.length;
+    }
+
     public int getNodesCount(){
         return this.nodesCount;
     }  // возвращает число вершин в графе
