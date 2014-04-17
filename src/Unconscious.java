@@ -14,6 +14,7 @@ public class Unconscious extends Thread {
         while(true){
             try{
             evaporateNodes(Graph);
+            printPheromons();
             sleep(1000);		//Приостанавливает поток на 1 секунду
         }catch(InterruptedException e){}
       }
@@ -23,6 +24,11 @@ public class Unconscious extends Thread {
     public void evaporateNodes(GGraph Graph){
         for (int i = 0; i <=Graph.getgNodesArraySize(); i++ ){
             Graph.getGNode(i).evaporatePheromon();
+        }
+    }
+    public void printPheromons(){
+        for (int i = 0; i <=Graph.getgNodesArraySize(); i++ ){
+            System.out.println("Node" + i + "pheromone level is" + Graph.getGNode(i).getPheromonLevel() );
         }
     }
 }

@@ -28,6 +28,11 @@ public class Ant extends Thread {
             chooseNextNode();               // обхода вершин
             visitNextNode();                // и оставление феромонов в них
             putPheromon();
+            try{
+                sleep(100);
+            }
+            catch (InterruptedException e){}
+
         }
     }
 

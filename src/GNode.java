@@ -39,7 +39,11 @@ public class GNode  {
     }
 
     public void evaporatePheromon(){
-        pheromonLevel = pheromonLevel * 0.9f ; //испарение на 10%
+        pheromonLevel = pheromonLevel * (float)0.95 ; //испарение на 5%
+    }
+
+    public float getPheromonLevel(){
+        return pheromonLevel;
     }
 
 
