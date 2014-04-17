@@ -38,7 +38,7 @@ public class GGraph {
     }
 
     public int getgNodesArraySize(){
-        return gNodesArray.length;
+        return gNodesArray.length-1;
     }
 
     public int getNodesCount(){

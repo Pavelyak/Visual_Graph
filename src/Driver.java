@@ -33,6 +33,12 @@ public class Driver {
     public static void main(String [ ] args){
         GGraph testGGraph = new GGraph(10,20); // создание тестового графа
         new Driver(testGGraph);                // визуализация тест. графа
+        new Ant(testGGraph);
+        Unconscious Un1 = new Unconscious(testGGraph);
+        Thread unconsciousThread = new Thread(Un1);
+        unconsciousThread.start();
+
+
         }
     }
 

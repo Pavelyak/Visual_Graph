@@ -12,7 +12,7 @@ public class GNode  {
     public int id; // номер вершины
     private int x; //координата х вершины
     private int y; // координата у вершины
-    private float pheromonLevel = 0;
+    private volatile float pheromonLevel = 0;
     ArrayList<GNode> listIn; // динамический массив ссылок на входящие вершин.
     ArrayList<GNode> listOut; // динамический массив ссылок на исходящие вершины.
 
@@ -34,9 +34,14 @@ public class GNode  {
         return this.y;
     }
 
-    public void setPheromonLevel(){
+    public synchronized void setPheromonLevel(){
         pheromonLevel += 0.5;
     }
+
+    public void evaporatePheromon(){
+        pheromonLevel = pheromonLevel * 0.9f ; //испарение на 10%
+    }
+
 
     public void printLinks(){                                  // печатает id всех входящих и выходящих вершины
         for (int i = 0; i < listIn.size(); i++ ){
