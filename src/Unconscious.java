@@ -3,7 +3,7 @@
  * бессознательное муравьиной колонии, отвечающее за поиск эйлерова пути на графе.
  * реализует испарение со временем феромонов из вершинок с помощью потоков исполнения.
  */
-public class Unconscious implements Runnable {
+public class Unconscious extends Thread {
     GGraph Graph;
    Unconscious(GGraph Graph){
    this.Graph = Graph;
@@ -19,8 +19,9 @@ public class Unconscious implements Runnable {
       }
     }
 
+    //функция, реализующая испарение феромонов во всех точках графа.
     public void evaporateNodes(GGraph Graph){
-        for (i = 0; i <=Graph.getgNodesArraySize(); i++ ){
+        for (int i = 0; i <=Graph.getgNodesArraySize(); i++ ){
             Graph.getGNode(i).evaporatePheromon();
         }
     }

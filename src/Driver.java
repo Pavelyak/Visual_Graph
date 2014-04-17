@@ -35,10 +35,7 @@ public class Driver {
         new Driver(testGGraph);                // визуализация тест. графа
         new Ant(testGGraph);
         Unconscious Un1 = new Unconscious(testGGraph);
-        Thread unconsciousThread = new Thread(Un1);
-        unconsciousThread.start();
-
-
-        }
+        Un1.start();
+               }
     }
 
