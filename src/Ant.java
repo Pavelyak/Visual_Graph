@@ -6,7 +6,7 @@
  */
 import java.util.Random;
 
-public class Ant {
+public class Ant extends Thread {
 
     private GNode currentNode ;             //текущее местонахождение муравья
     private GNode nextNode;                 // следующее
@@ -20,6 +20,10 @@ public class Ant {
         startNodeGenerator(graph);          //выбираем начальную точку
         currentNode = startNode;
         putPheromon();                      // оставляем феромончик
+    }
+
+    //override
+    public void run(){
         while(true){                        // бесконечный цикл
             chooseNextNode();               // обхода вершин
             visitNextNode();                // и оставление феромонов в них
@@ -27,12 +31,14 @@ public class Ant {
         }
     }
 
-
     //функция выбора следующей вершинки для движения муравья
     public void chooseNextNode(){
         Random rand = new Random();
-        int intNextNode = rand.nextInt(currentNode.listOut.size()); //выбираем одну из вершин, куда далее пойдет муравей
-        nextNode = currentNode.listOut.get(intNextNode);
+        try{
+            int intNextNode = rand.nextInt(currentNode.listOut.size()); //выбираем одну из вершин, куда далее пойдет муравей
+            nextNode = currentNode.listOut.get(intNextNode);
+        }
+        catch (IllegalArgumentException e){ this.stop();}
     }
     //функция выбора точки старта муравья
     public GNode startNodeGenerator(GGraph graph){
@@ -43,7 +49,7 @@ public class Ant {
     }
 
     //функция посещения следуюющей вершины
-      public void visitNextNode(){
+    public void visitNextNode(){
         currentNode = nextNode;
     }
 

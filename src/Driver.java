@@ -31,11 +31,20 @@ public class Driver {
 
 
     public static void main(String [ ] args){
+        Ant[] AntColony;
         GGraph testGGraph = new GGraph(10,20); // создание тестового графа
-        new Driver(testGGraph);                // визуализация тест. графа
-        new Ant(testGGraph);                   // создание муравейки
+        AntColony = new Ant[20];
+        System.out.println("граф создан");
+        for (int i = 0; i <=19; i++ ){
+            System.out.println("вход в цикл создания муравьев");
+            AntColony[i] = new Ant(testGGraph);
+            AntColony[i].start();
+            System.out.println("Муравей создан" + i);
+        }
+
         Unconscious Un1 = new Unconscious(testGGraph); //создание бессознательного
         Un1.start();  //старт потока
+        new Driver(testGGraph);                // визуализация тест. графа
        }
     }
 
