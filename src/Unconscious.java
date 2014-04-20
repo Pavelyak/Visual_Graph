@@ -25,7 +25,7 @@ public class Unconscious extends Thread {
         for (int i = 0; i <=graph.getgNodesArraySize(); i++ ){
             GNode gNode = graph.getGNode(i);
             for (int j = 0; j < gNode.listOut.size(); j++)
-            gNode.listOut.get(j).evaporatePheromon();
+            gNode.listOut.get(j).evaporatePheromon() ;
         }
     }
     public void printPheromons(){
