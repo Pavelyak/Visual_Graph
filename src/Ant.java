@@ -9,9 +9,11 @@ import java.util.Random;
 public class Ant extends Thread {
 
     private GNode currentNode ;             //текущее местонахождение муравья
-    private GNode nextNode;                 // следующее
+    //private GNode nextNode;                 // следующее
     private GNode startNode;                // самая начальная точка
-
+    private Edge visitEdge;
+    private Edge nextEdge;                  // ребро, выбранное муравьем для ходьбы
+    private GNode previousNode;
 
 
     //конструктор муравья, в котором прописываем муравья,
@@ -19,7 +21,10 @@ public class Ant extends Thread {
     public Ant(GGraph graph){
         startNodeGenerator(graph);          //выбираем начальную точку
         currentNode = startNode;
+        previousNode = startNode;
+/*
         putPheromon();                      // оставляем феромончик
+*/
     }
 
     //override
@@ -29,7 +34,7 @@ public class Ant extends Thread {
             visitNextNode();                // и оставление феромонов в них
             putPheromon();
             try{
-                sleep(100);
+                sleep(1000);
             }
             catch (InterruptedException e){}
 
@@ -41,7 +46,7 @@ public class Ant extends Thread {
         Random rand = new Random();
         try{
             int intNextNode = rand.nextInt(currentNode.listOut.size()); //выбираем одну из вершин, куда далее пойдет муравей
-            nextNode = currentNode.listOut.get(intNextNode);
+            nextEdge = currentNode.listOut.get(intNextNode);
         }
         catch (IllegalArgumentException e){ this.stop();}
     }
@@ -55,12 +60,27 @@ public class Ant extends Thread {
 
     //функция посещения следуюющей вершины
     public void visitNextNode(){
-        currentNode = nextNode;
+        previousNode = currentNode;
+        currentNode = nextEdge.getFinishGNode();
     }
 
     //функция, оставление феромона
     public void putPheromon(){
-        currentNode.setPheromonLevel();
+        nextEdge.setPheromonLevel();
+    }
+
+    // функция получения координат муравья
+    public int getX() {
+        return currentNode.getX();
+    }
+    public int getY() {
+        return currentNode.getY();
+    }
+    public int getPreviousX(){
+        return previousNode.getX();
+    }
+    public int getPreviousY(){
+        return previousNode.getY();
     }
 }
 

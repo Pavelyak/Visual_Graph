@@ -45,12 +45,12 @@ public class GGraph {
         return this.nodesCount;
     }  // возвращает число вершин в графе
 
-    public void printGraphStat(){
+    /*public void printGraphStat(){
 
         System.out.println("Graph has " + nodesCount + " nodes and " +  linksCount +" links");
         System.out.println("Statistics for each node provided below");
         for(int i = 0; i <= (nodesCount - 1); i++)
             gNodesArray[i].printLinks();
 
-    }
+    }*/
 }

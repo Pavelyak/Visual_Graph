@@ -11,11 +11,11 @@ public class Driver {
 
     private GraphWriter graphWriter; // класс, занимающийся отрисовкой графа
 
-    public  Driver (GGraph graph) {
+    public  Driver (GGraph graph, Ant[] AntColony) {
         int fringe = 40; // размер рамки
 
         // создаем graphWriter
-        graphWriter = new GraphWriter(800, 600, fringe, graph);
+        graphWriter = new GraphWriter(800, 600, fringe, graph, AntColony);
 
         // Panel  - в ней будет отрисовываться сам граф
         JPanel graphPanel = new JPanel(new BorderLayout());
@@ -33,9 +33,9 @@ public class Driver {
     public static void main(String [ ] args){
         Ant[] AntColony;
         GGraph testGGraph = new GGraph(10,20); // создание тестового графа
-        AntColony = new Ant[20];
+        AntColony = new Ant[1];
         System.out.println("граф создан");
-        for (int i = 0; i <=19; i++ ){
+        for (int i = 0; i < AntColony.length; i++ ){
             System.out.println("вход в цикл создания муравьев");
             AntColony[i] = new Ant(testGGraph);
             AntColony[i].start();
@@ -44,7 +44,7 @@ public class Driver {
 
         Unconscious Un1 = new Unconscious(testGGraph); //создание бессознательного
         Un1.start();  //старт потока
-        new Driver(testGGraph);                // визуализация тест. графа
+        new Driver(testGGraph, AntColony);                // визуализация тест. графа
        }
     }
 
