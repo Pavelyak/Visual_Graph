@@ -8,7 +8,7 @@ import java.awt.geom.Ellipse2D;
 import java.util.Enumeration;
 import java.util.logging.Logger;
 
-public class GraphWriter extends JComponent implements Runnable {
+public class GraphWriter extends Canvas implements Runnable {
     Graphics2D g2;
     int width;
     int height;
@@ -17,11 +17,12 @@ public class GraphWriter extends JComponent implements Runnable {
     private Ant[] AntColony;                // Массив -  колония муравьев для отрисовки
     public final int nodeDiameter = 14;     // диаметр вершинки
 
-    // конструктор. В параметры передаем размеры и граф, который необходимо отрисовать
-    public GraphWriter(int width, int height, int fringe,  // ширина, высота, размер рамки
-                       GGraph graph, Ant[] AntColony ){                    // конкретные экземпляры графа и колонии муравьев
-        this.width =  width - (2*fringe);      // размер области рисования
-        this.height = height - 3*fringe;       // размер области рисования
+    // конструктор. В параметры передаем размеры, граф, колонию которых необходимо отрисовать
+    public GraphWriter(int width, int height, int fringe,      // ширина, высота, размер рамки
+                       GGraph graph, Ant[] AntColony ){        // конкретные экземпляры графа и колонии муравьев
+        //setOpaque(false);
+        this.width =  width - (2*fringe);                      // размер области рисования
+        this.height = height - 3*fringe;                       // размер области рисования
         this.fringe = fringe;
         this.graph = graph;
         this.AntColony = AntColony;
@@ -32,9 +33,9 @@ public class GraphWriter extends JComponent implements Runnable {
 
     // отрисовка
     public void paint(Graphics g) {
-        Logger.global.info("@ => paint in dGraphWriter");                             // вывод в консольку об отрисовке
+        Logger.global.info("@ => paint in dGraphWriter");        // вывод в консольку об отрисовке
         this.g2 = (Graphics2D) g;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,                          // хз, что это
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,     // хз, что это
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
         g2.setColor(Color.white);                                // отрисовка области белым цветом
@@ -48,6 +49,7 @@ public class GraphWriter extends JComponent implements Runnable {
             // отрисовка вершин
             g2.setColor(Color.red);
             g2.fill(new Ellipse2D.Double(x - nodeDiameter/2, y - nodeDiameter/2, nodeDiameter, nodeDiameter));
+
             // отрисовка стрелок
             g2.setColor(Color.black);
             for (int i = 0; i < gNode.listOut.size(); i++){
@@ -68,19 +70,24 @@ public class GraphWriter extends JComponent implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
 
         // отрисовка муравьев
-        g2.setColor(Color.black);
         int antDiameter = 10;
         for (int i = 0; i < AntColony.length; i++){
-            int posX1 = AntColony[i].getPreviousX();
+            int posX1 = AntColony[i].getPreviousX();             // старые и новые координаты муравьев
             int posY1 = AntColony[i].getPreviousY();
             int posX2 = AntColony[i].getX();
             int posY2 = AntColony[i].getY();
 
+
+            g2.setColor(Color.red);                              //закраска старых положений муравьев
+            g2.fill(new Ellipse2D.Double(posX1 - antDiameter/2, posY1 - antDiameter/2,
+                    antDiameter, antDiameter));
+            g2.setColor(Color.black);                            //отрисовкка нового положения муравьев
             g2.fill(new Ellipse2D.Double(posX2 - antDiameter/2, posY2 - antDiameter/2,
                                          antDiameter, antDiameter));
-            g2.setStroke(new BasicStroke(1.0f));
-            g2.drawLine(posX1, posY1, posX2, posY2);
 
+            float phlev = (AntColony[i].getVisitedEdge().getPheromonLevel())*2;  //нормированный уровень феромона
+            g2.setStroke(new BasicStroke(0.2f + phlev));                    // отрисовка пути, пройденного мурв=авьем
+            g2.drawLine(posX1, posY1, posX2, posY2);
 
         }
     }

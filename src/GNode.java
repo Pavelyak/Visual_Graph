@@ -56,7 +56,7 @@ public class GNode  {
     }*/
 
     public void addOut (GNode gNodeFinish){          // функция, добавляющая связи между двумя вершинами
-        listOut.add(new Edge (gNodeFinish));                   // добавляем out вершину NodeFinish  в массив искомого Node
+        listOut.add(new Edge (gNodeFinish));                  // добавляем out вершину NodeFinish  в массив искомого Node
         gNodeFinish.listIn.add(new Edge(this));               // заносим искомую вершину в in массив конечной вершины NodeFinish
     }
 

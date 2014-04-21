@@ -11,7 +11,7 @@ public class Ant extends Thread {
     private GNode currentNode ;             //текущее местонахождение муравья
     //private GNode nextNode;                 // следующее
     private GNode startNode;                // самая начальная точка
-    private Edge visitEdge;
+    private Edge visitedEdge;
     private Edge nextEdge;                  // ребро, выбранное муравьем для ходьбы
     private GNode previousNode;
 
@@ -81,6 +81,9 @@ public class Ant extends Thread {
     }
     public int getPreviousY(){
         return previousNode.getY();
+    }
+    public Edge getVisitedEdge(){
+        return nextEdge;
     }
 }
 
