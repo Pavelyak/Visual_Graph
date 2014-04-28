@@ -3,7 +3,7 @@
  */
 import java.util.Random;
 /**
- * Created by Killon on 04.04.14.
+ * Created by Павел  on 04.04.14.
  * Created by Ринат on 07.04.14.
  */
 public class GGraph {
@@ -20,7 +20,7 @@ public class GGraph {
 
         for(int id = 0; id <= (nodesCount - 1); id++){          //создаем заданное количество тестовых вершин
             Random rand = new Random();
-            int x = 40 + rand.nextInt(800 - 2*40 - 10);                          // подумать над связью  с окнами, рисуемыми в GUI
+            int x = 40 + rand.nextInt(800 - 2*40 - 10);       // подумать над связью  с окнами, рисуемыми в GUI
             int y = 40 + rand.nextInt(600 - 3*40 - 10);  // от fringe до writer.height - nodeDiameter
             gNodesArray[id] = new GNode(x , y);
         }

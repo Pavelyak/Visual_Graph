@@ -40,8 +40,8 @@ public class Driver {
 
     public static void main(String [ ] args){
         Ant[] AntColony;
-        GGraph testGGraph = new GGraph(10,20);            // создание тестового графа
-        AntColony = new Ant[1];                           // содание колонии
+        GGraph testGGraph = new GGraph(10,1000);            // создание тестового графа
+        AntColony = new Ant[10];                           // содание колонии
         System.out.println("граф создан");
         for (int i = 0; i < AntColony.length; i++ ){
             System.out.println("вход в цикл создания муравьев");

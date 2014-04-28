@@ -15,7 +15,7 @@ public class Unconscious extends Thread {
             try{
             evaporateEdges(graph);
             printPheromons();
-            sleep(10000);		//Приостанавливает поток на 1 секунду
+            sleep(1000);		//Приостанавливает поток на 1 секунду
         }catch(InterruptedException e){}
       }
     }

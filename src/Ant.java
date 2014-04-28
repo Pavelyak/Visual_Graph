@@ -4,6 +4,7 @@
  * Класс, реализующий муравья, совершающего обход по графу, оставляющего феромоны в пройденных точках.
  * Часть реализации муравьиного алгоритма поиска суперстроки.
  */
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Ant extends Thread {
@@ -11,9 +12,11 @@ public class Ant extends Thread {
     private GNode currentNode ;             //текущее местонахождение муравья
     //private GNode nextNode;                 // следующее
     private GNode startNode;                // самая начальная точка
-    private Edge visitedEdge;
+    //private Edge visitedEdge;
     private Edge nextEdge;                  // ребро, выбранное муравьем для ходьбы
     private GNode previousNode;
+    ArrayList<GNode> route;                  //массив, в котором муравей сохраняет пройденный путь
+    private boolean finished;
 
 
     //конструктор муравья, в котором прописываем муравья,
@@ -21,7 +24,9 @@ public class Ant extends Thread {
     public Ant(GGraph graph){
         startNodeGenerator(graph);          //выбираем начальную точку
         currentNode = startNode;
-        previousNode = startNode;
+        route.add(startNode);               // записываем стартовую точку в маршрут
+        previousNode = startNode;           // для визуализации, ибо необходимо правильно расставлять стрелки
+        finished = false;
 /*
         putPheromon();                      // оставляем феромончик
 */
@@ -34,7 +39,7 @@ public class Ant extends Thread {
             visitNextNode();                // и оставление феромонов в них
             putPheromon();
             try{
-                sleep(1000);
+                sleep(100);
             }
             catch (InterruptedException e){}
 
@@ -45,10 +50,12 @@ public class Ant extends Thread {
     public void chooseNextNode(){
         Random rand = new Random();
         try{
-            int intNextNode = rand.nextInt(currentNode.listOut.size()); //выбираем одну из вершин, куда далее пойдет муравей
-            nextEdge = currentNode.listOut.get(intNextNode);
+            int intNextEdge = rand.nextInt(currentNode.listOut.size()); //выбираем одну из вершин, куда далее пойдет муравей
+            nextEdge = currentNode.listOut.get(intNextEdge);
         }
-        catch (IllegalArgumentException e){ this.stop();}
+        catch (IllegalArgumentException e){
+            nextEdge = null;
+            this.stop();}
     }
     //функция выбора точки старта муравья
     public GNode startNodeGenerator(GGraph graph){
@@ -61,7 +68,8 @@ public class Ant extends Thread {
     //функция посещения следуюющей вершины
     public void visitNextNode(){
         previousNode = currentNode;
-        currentNode = nextEdge.getFinishGNode();
+        if (nextEdge != null) currentNode = nextEdge.getFinishGNode();
+        route.add(currentNode);
     }
 
     //функция, оставление феромона

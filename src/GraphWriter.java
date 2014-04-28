@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.util.Enumeration;
 import java.util.logging.Logger;
+import java.math.*;
 
 public class GraphWriter extends Canvas implements Runnable {
     Graphics2D g2;
@@ -85,8 +86,13 @@ public class GraphWriter extends Canvas implements Runnable {
             g2.fill(new Ellipse2D.Double(posX2 - antDiameter/2, posY2 - antDiameter/2,
                                          antDiameter, antDiameter));
 
-            float phlev = (AntColony[i].getVisitedEdge().getPheromonLevel())*2;  //нормированный уровень феромона
-            g2.setStroke(new BasicStroke(0.2f + phlev));                    // отрисовка пути, пройденного мурв=авьем
+            if(AntColony[i].getVisitedEdge() != null ){
+            double phlev = Math.log((AntColony[i].getVisitedEdge().getPheromonLevel())*2); //нормированный уровень феромона
+            g2.setStroke(new BasicStroke(0.2f + (float)phlev));
+            }
+            else{
+            g2.setStroke(new BasicStroke(2));}
+
             g2.drawLine(posX1, posY1, posX2, posY2);
 
         }
