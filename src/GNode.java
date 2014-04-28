@@ -76,7 +76,7 @@ class Edge {                                   // ребро - основное 
     private volatile float pheromonLevel = 0;
 
 
-    Edge(GNode finishGNode){
+    Edge (GNode finishGNode){
         this.finishGNode = finishGNode;
     }
 

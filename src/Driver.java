@@ -4,7 +4,7 @@ import java.lang.*;
 
 
 /**
- * Created by Павел Яковлев on 14.03.14.
+ * Created by Павел Яковлев and modified by Ринат Даутов on 14.03.14 till the end.
  * Класс, контролирующий всю внутренню деятельность системы. То бишь main
  */
 public class Driver {
@@ -39,19 +39,23 @@ public class Driver {
 
 
     public static void main(String [ ] args){
-        Ant[] AntColony;
-        GGraph testGGraph = new GGraph(10,1000);            // создание тестового графа
-        AntColony = new Ant[10];                           // содание колонии
-        System.out.println("граф создан");
-        for (int i = 0; i < AntColony.length; i++ ){
+        Ant[] AntColony;                                    // инициализация колонии муравьев.
+
+        GGraph testGGraph = new GGraph(3,100);            // создание тестового графа
+
+        AntColony = new Ant[10];                            // содание колонии
+
+        System.out.println("граф создан");                  // сервисная информация
+
+        for (int i = 0; i < AntColony.length; i++ ){        // инициализация муравьев.
             System.out.println("вход в цикл создания муравьев");
             AntColony[i] = new Ant(testGGraph);
             AntColony[i].start();
             System.out.println("Муравей создан" + i);
         }
 
-        Unconscious Un1 = new Unconscious(testGGraph);    //создание бессознательного
-        Un1.start();                                      //старт потока
+        Unconscious Un1 = new Unconscious(testGGraph);    // создание бессознательного
+        Un1.start();                                      // старт потока
         new Driver(testGGraph, AntColony);                // визуализация тест. графа
        }
     }

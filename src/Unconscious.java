@@ -4,7 +4,8 @@
  * реализует испарение со временем феромонов из вершинок с помощью потоков исполнения.
  */
 public class Unconscious extends Thread {
-    GGraph graph;
+
+   GGraph graph;
    Unconscious(GGraph graph){
    this.graph = graph;
    }
@@ -28,9 +29,12 @@ public class Unconscious extends Thread {
             gNode.listOut.get(j).evaporatePheromon() ;
         }
     }
+
     public void printPheromons(){
         for (int i = 0; i <= graph.getgNodesArraySize(); i++ ){
-            System.out.println("Node" + i + "pheromone level is" + graph.getGNode(i).getPheromonLevel() );
+            GNode gNode = graph.getGNode(i);
+            for (int j = 0; j < gNode.listOut.size(); j++)
+            System.out.println("Edge" + i + "pheromone level is" + gNode.listOut.get(j).getPheromonLevel()) ;
         }
     }
 }

@@ -69,9 +69,11 @@ public class GraphWriter extends Canvas implements Runnable {
     public void update(Graphics g) {
         //Logger.global.info("@ => update in dGraphWriter");
         Graphics2D g2 = (Graphics2D) g;
+        double phlev;
 
         // отрисовка муравьев
         int antDiameter = 10;
+
         for (int i = 0; i < AntColony.length; i++){
             int posX1 = AntColony[i].getPreviousX();             // старые и новые координаты муравьев
             int posY1 = AntColony[i].getPreviousY();
@@ -87,7 +89,12 @@ public class GraphWriter extends Canvas implements Runnable {
                                          antDiameter, antDiameter));
 
             if(AntColony[i].getVisitedEdge() != null ){
-            double phlev = Math.log((AntColony[i].getVisitedEdge().getPheromonLevel())*2); //нормированный уровень феромона
+                if( AntColony[i].getVisitedEdge().getPheromonLevel() != 0.0){
+                    phlev = Math.log((AntColony[i].getVisitedEdge().getPheromonLevel())*2);
+                }
+                else
+                    phlev = 0;
+
             g2.setStroke(new BasicStroke(0.2f + (float)phlev));
             }
             else{
