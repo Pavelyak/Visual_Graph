@@ -98,7 +98,7 @@ public class GraphWriter extends Canvas implements Runnable {
             g2.setStroke(new BasicStroke(0.2f + (float)phlev));
             }
             else{
-            g2.setStroke(new BasicStroke(2));}
+            g2.setStroke(new BasicStroke(0.2f));}
 
             g2.drawLine(posX1, posY1, posX2, posY2);
 

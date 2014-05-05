@@ -6,8 +6,11 @@
 public class Unconscious extends Thread {
 
    GGraph graph;
-   Unconscious(GGraph graph){
+   Ant[] AntColony;
+
+    Unconscious(GGraph graph, Ant[] AntColony ){
    this.graph = graph;
+   this.AntColony = AntColony;
    }
     @Override
     // реализуем бессознательное как поток исполнения.
@@ -15,7 +18,10 @@ public class Unconscious extends Thread {
         while(true){
             try{
             evaporateEdges(graph);
-            printPheromons();
+            for (int i = 0; i < AntColony.length; i++){
+                System.out.println("I am " + i +"Ant and my route is" + AntColony[i].getRouteLength());
+            }
+            // printPheromons();
             sleep(1000);		//Приостанавливает поток на 1 секунду
         }catch(InterruptedException e){}
       }

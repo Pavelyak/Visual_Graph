@@ -45,6 +45,8 @@ public class GNode  {
         return pheromonLevel;
     }
 
+    public int getId() {return id;}
+
 
     /*public void printLinks(){                                  // печатает id всех входящих и выходящих вершины
         for (int i = 0; i < listIn.size(); i++ ){
@@ -66,32 +68,14 @@ public class GNode  {
         System.out.println("X = " + x);
         System.out.println("Y = " + y);
     }
-}
 
-class Edge {                                   // ребро - основное отличие от просто выходящей вершины в том,
-                                               // что кол-во феромона откладывается на ребре, феромон зависит
-                                               // от i и j вершины
-    private GNode startGNode,
-                  finishGNode;
-    private volatile float pheromonLevel = 0;
-
-
-    Edge (GNode finishGNode){
-        this.finishGNode = finishGNode;
-    }
-
-    public synchronized void setPheromonLevel(){
-        pheromonLevel += 0.5;
-    }
-
-    public void evaporatePheromon(){
-        pheromonLevel = pheromonLevel * (float)0.95 ; //испарение на 5%
-    }
-    public float getPheromonLevel(){
-        return pheromonLevel;
-    }
-
-    public GNode getFinishGNode(){
-        return finishGNode;
+    //функция, возвращающая стрелочку, соединяющую данну вершинку с указанной ID
+    public Edge getConnectingEdge(int id){
+        int i = 0;
+        while (this.listOut.get(i).getFinishGNode().getId() != id){
+            i++;
+        }
+        return this.listOut.get(i);
     }
 }
+
