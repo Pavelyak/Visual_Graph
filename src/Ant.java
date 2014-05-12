@@ -11,7 +11,9 @@ import java.util.Random;
 public class Ant extends Thread {
     GGraph graph;
     private final double alpha = 0.5,        // указываем параметры алгоритма.
-                         beta  = 0.5;
+                         beta  = 0.5,
+                         pheromoneMax = 5;  // регулируемый параметр для феромонов.
+    private final double nodesPercentToFinish = 0.8;  // сколько должен пройти муравей, чтоб завершить итерацию.
 
 
     private long routeLength = 0;
@@ -22,23 +24,30 @@ public class Ant extends Thread {
 
     private Edge nextEdge;                   // ребро, выбранное муравьем для ходьбы
 
-    private boolean finished;                // флаг, который устанавливается, когда муравей вернулся в исходную точку
+    private boolean finished = false ;       // флаг, который устанавливается, когда муравей вернулся в исходную точку
+    private boolean failed = false ;         // флаг, который устанавливается, если муравей ступил и не нашел замкнутый путь.
+    private boolean alive = true;            // Живой естестенно
 
     ArrayList<Integer> route;                /* массив, в котором муравей сохраняет(ID вершин) пройденный путь
                                              он же табу - лист, куда ходить больше нельзя( в него не записана
                                              начальная точка */
+    ArrayList<Edge> edgesVisited;            /* Массив, в котором муравей сохраняет пройденные стрелки,
+                                             чтобы оставить феромоны*/
 
 
-    /*конструктор муравья, в котором прописываем муравья,
+    /* конструктор муравья, в котором прописываем муравья,
     который бегает бесконечно долго и оставляет феромоны*/
 
     public Ant(GGraph graph){
         this.graph = graph;
         route = new ArrayList<Integer>();
+        edgesVisited = new ArrayList<Edge>();
         startNode = startNodeGenerator(graph);          //выбираем начальную точку
         currentNode = startNode;
         previousNode = startNode;           // для визуализации, ибо необходимо правильно расставлять стрелки
         finished = false;                   // устанавливаем флаг того, что муравейка не финишировал.
+        failed = false;                     // презумция невиновности.
+        alive = true;
     }
 
     /*override
@@ -46,17 +55,23 @@ public class Ant extends Thread {
     * Следует здесь ПЕРЕПИСАТЬ ВСЕ МОЗГИ ТРУДЯЖКИ*/
 
      public void run(){
-        while(route.size()!=10){                        // бесконечный цикл
+         while(!finished && !failed){             // бесконечный цикл
             chooseNextNode();               // обхода вершин
             visitNextNode();                // и оставление феромонов в них
-            putPheromon();
-            /*try{
-                sleep(10);
-            }
-            catch (InterruptedException e){}*/
+            writePheromon();
+             if(finished){
+                     alive = false;
+                     while(true){
+                         try{
+                             sleep(100);
+                         }
+                         catch (InterruptedException e){}
+                     }
 
-        }
-    }
+                 }
+             }
+         }
+
 
     /* функция выбора точки старта муравья
     * Здесь стартовая точка выбирается абсолютно случайно
@@ -74,8 +89,7 @@ public class Ant extends Thread {
         return startNode;
     }
 
-    /* функция выбора следующей вершинки для движения муравья
-    * ТРЕБУЕТ КАЧЕСТВЕННО НОВОГО ОСМЫСЛЕНИЯ НА ОСНОВЕ СТОХАСТИЧЕСКОЙ МОДЕЛИ */
+    /* функция выбора следующей вершинки для движения муравья     */
     public void chooseNextNode(){
 
         ArrayList<Integer> allowedWay;              // массив с ID разрешенных вершинок для муравья
@@ -89,71 +103,96 @@ public class Ant extends Thread {
         /* Указываем муравью, куда он может пойти из текущей вершины
         * пройденные ранее вершины запрещаются.
         */
-        System.out.println("currentNode.listOut.size " + currentNode.listOut.size());
-        for(int i = 0; i <= currentNode.listOut.size()-1 ; i++ ){
-            System.out.println("starting calcs");
-            System.out.println("route.size " + route.size());
+
+        for(int i = 0; i < currentNode.listOut.size() ; i++ ){
             boolean inRoute;
             int j = 0;
             inRoute = false;
+            int currentNodeID = currentNode.listOut.get(i).getFinishGNode().getId();
             if (route.size() !=0 && currentNode.listOut.size() != 0 ){
-                while (j != route.size() -1  ) {
-                    if(currentNode.listOut.get(i).getFinishGNode().getId() == route.get(j)){
-                        System.out.println("HUI");
+                while (j != route.size()  ) {
+                    if(currentNodeID == route.get(j)){
+                        System.out.println("НЕЛЬзя!! ");
                         inRoute = true;
-                        j = route.size()-1 ;
+                        break;
                     }
                     else j++;
                 }
             }
-            System.out.println(inRoute);
             if (inRoute == false){
-                allowedWay.add(currentNode.listOut.get(i).getFinishGNode().getId());
+                allowedWay.add(currentNodeID);
                 System.out.println("Добавлено в Маршрут!!!");
             }
-
         }
+
+        //Проверяем, можно ли вообще куда - то пойти.
+        if(allowedWay.size() == 0){
+            failed = true;
+            System.out.println("ЗАФЕЙЛИЛСЯ!!!!((((((((");
+            alive = false;
+            this.stop();
+        }
+
 
         // теперь считаем знаменатель формулы вероятности пойти в каждую из точек
-        fullprobablity = 0.0;
-        for(int i = 0; i <= allowedWay.size() - 1 ; i++ ){
-            fullprobablity += Math.pow(currentNode.getConnectingEdge(allowedWay.get(i)).getPheromonLevel() , alpha);
-        }
-        System.out.println("fullprobablity" + fullprobablity);
+        if(alive){
+            fullprobablity = 0.0;
 
-        //считаем вероятность пойти в каждую вершинку ВЫРАВНИВАЕТСЯ К ЕДИНИЦЕ
-        for(int i = 0; i <= allowedWay.size() - 1; i++ ){
+            for(int i = 0; i < allowedWay.size(); i++ ){
+                Edge currentEdge = currentNode.getConnectingEdge(allowedWay.get(i));
+                fullprobablity += (Math.pow(currentEdge.getPheromonLevel() , alpha))
+                                *(Math.pow(currentEdge.getEdgeWeight() ,beta));
+            }
+            System.out.println("fullprobablity" + fullprobablity);
+
+            //считаем вероятность пойти в каждую вершинку ВЫРАВНИВАЕТСЯ К ЕДИНИЦЕ
             if (fullprobablity != 0){
-                probablities.add( probablities.get(i) + (Math.pow(currentNode.getConnectingEdge(allowedWay.get(i)).getPheromonLevel(), alpha)/ fullprobablity));
-                System.out.println("probablity " + i +" " + probablities.get(i+1) );
+                for(int i = 0; i < allowedWay.size() ; i++ ){
+                    Edge currentEdge = currentNode.getConnectingEdge(allowedWay.get(i));
+                    probablities.add(probablities.get(i) + (Math.pow(currentEdge.getPheromonLevel(), alpha)/ fullprobablity)
+                                                         * (Math.pow(currentEdge.getEdgeWeight() , beta)));
+                    System.out.println("probablity " + i + + probablities.get(i+1) );
+                }
+            }
+
+            Random rand = new Random();      // генератор случайных чисел
+            double numero = rand.nextFloat(); // сгенерировали случайное вещественное число от 0 до 1
+            System.out.println("Random Number generated was" + numero);
+
+            for(int i = 0; i <= allowedWay.size() - 1 ; i++){
+                if( (numero >= probablities.get(i)) && (numero < probablities.get(i+1)) ){
+                    // если выбранная точка попадает на начальную, а 80% точек еще не пройдено.
+                    if(currentNode.getConnectingEdge(allowedWay.get(i)).getFinishGNode().getId() == startNode.getId()
+                                                    && route.size() < nodesPercentToFinish*graph.getNodesCount() -1){
+                        System.out.println("РАНО ДОМОЙ ЗАХОТЕЛ !!!111");
+                        //Где - то ТУТ ОШибКа
+                        if(allowedWay.size() > 1){
+                            chooseNextNode();
+                        }
+                        else{
+                            System.out.println("ЗАФЕЙЛИЛСЯ!!!!((((((((");
+                            alive = false;
+                            this.stop();
+                        }
+                    }
+                    // если прошел 80% пути
+                    else if(currentNode.getConnectingEdge(allowedWay.get(i)).getFinishGNode().getId() == startNode.getId()
+                         && route.size() >= nodesPercentToFinish*graph.getNodesCount() -1){
+
+                        finished = true;
+                        System.out.println("I HAVE FINISHED!!!");
+                        nextEdge = currentNode.getConnectingEdge(allowedWay.get(i));
+                    }
+                    else {
+                        nextEdge = currentNode.getConnectingEdge(allowedWay.get(i));
+                        System.out.println("Выбрал путь!");
+                        allowedWay.clear();
+                        probablities.clear();
+                    }
+                }
+                else {}
             }
         }
-
-        Random rand = new Random();      // генератор случайных чисел
-        double numero = rand.nextFloat(); // сгенерировали случайное вещественное число от 0 до 1
-        System.out.println("Random Number generated was" + numero);
-
-        for(int i = 0; i <= allowedWay.size() - 1 ; i++){
-            if( (numero >= probablities.get(i)) && (numero < probablities.get(i+1)) ){
-                nextEdge = currentNode.getConnectingEdge(allowedWay.get(i));
-                System.out.println("Выбрал путь!");
-                allowedWay.clear();
-                probablities.clear();
-
-
-            }
-        }
-
-
-
-        /*Random rand = new Random();
-        try{
-            int intNextEdge = rand.nextInt(currentNode.listOut.size()); //выбираем одну из вершин, куда далее пойдет муравей
-            nextEdge = currentNode.listOut.get(intNextEdge);
-        }
-        catch (IllegalArgumentException e){
-            nextEdge = null;
-            this.stop();}*/
     }
 
 
@@ -173,9 +212,16 @@ public class Ant extends Thread {
     }
 
     // Функция оставления феромона на ребре
-    public void putPheromon(){
-        nextEdge.setPheromonLevel();
-        System.out.println("Оставил феромон!");
+    public void writePheromon(){
+        edgesVisited.add(nextEdge);
+        System.out.println("Записал,куда надо оставить феромончик!");
+    }
+
+    public void putPheromones(){
+        for(int i = 0; i<= edgesVisited.size() - 1; i++){
+            edgesVisited.get(i).setPheromonLevel( (float)pheromoneMax/routeLength);
+            System.out.println("Оставил феромоны");
+        }
     }
 
     // функции получения координат муравья
@@ -194,6 +240,9 @@ public class Ant extends Thread {
     public Edge getVisitedEdge(){
         return nextEdge;
     }
+
     public long getRouteLength(){ return routeLength;}
+
+    public boolean amAlive(){ return alive;}
 }
 

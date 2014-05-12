@@ -29,8 +29,8 @@ class Edge {
         return edgeWeight;
     }
 
-    public synchronized void setPheromonLevel(){
-        pheromonLevel += 0.5;
+    public synchronized void setPheromonLevel(float pheromoneUp){
+        pheromonLevel += pheromoneUp;
     }
 
     public void evaporatePheromon(){

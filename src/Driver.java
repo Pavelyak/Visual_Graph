@@ -47,13 +47,6 @@ public class Driver {
 
         System.out.println("граф создан");                  // сервисная информация
 
-        for (int i = 0; i < AntColony.length; i++ ){        // инициализация муравьев.
-            System.out.println("вход в цикл создания муравьев");
-            AntColony[i] = new Ant(testGGraph);
-            AntColony[i].start();
-            System.out.println("Муравей создан" + i);
-        }
-
         Unconscious Un1 = new Unconscious(testGGraph,AntColony);    // создание бессознательного
         Un1.start();                                      // старт потока
         new Driver(testGGraph, AntColony);                // визуализация тест. графа
