@@ -206,6 +206,7 @@ public class Ant extends Thread {
             System.out.println("Поменяно");
             route.add(currentNode.getId());
             routeLength += nextEdge.getEdgeWeight();
+            System.out.print("while visiting next NODE Starting from NODE " + startNode.getId());
         }
 
 
@@ -241,8 +242,12 @@ public class Ant extends Thread {
         return nextEdge;
     }
 
-    public long getRouteLength(){ return routeLength;}
+    public synchronized long getRouteLength(){ return routeLength;}
 
     public boolean amAlive(){ return alive;}
+
+    public synchronized int getStartNodeID() {return startNode.getId();}
+
+    public boolean isSuccessful(){return finished;}
 }
 

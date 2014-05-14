@@ -41,16 +41,15 @@ public class Driver {
     public static void main(String [ ] args){
         Ant[] AntColony;                                    // инициализация колонии муравьев.
 
-        GGraph testGGraph = new GGraph(10, 20);            // создание тестового графа
+        GGraph testGGraph = new GGraph(5, 20);            // создание тестового графа
         testGGraph.adjust();                               // пружины
 
-        AntColony = new Ant[1];                            // содание колонии
+        AntColony = new Ant[5];                            // содание колонии
 
         System.out.println("граф создан");                  // сервисная информация
 
         Unconscious Un1 = new Unconscious(testGGraph,AntColony);    // создание бессознательного
         Un1.start();                                      // старт потока
         new Driver(testGGraph, AntColony);                // визуализация тест. графа
-       }
     }
-
+}
