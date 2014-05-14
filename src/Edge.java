@@ -17,7 +17,7 @@ class Edge {
 
     private volatile float pheromonLevel = 10;
 
-    // Кфонструктор ребра
+    // Конструктор ребра
     Edge (GNode finishGNode){
         this.edgeID = edgesCount;
         edgesCount++;
@@ -43,6 +43,10 @@ class Edge {
 
     public GNode getFinishGNode(){
         return finishGNode;
+    }
+
+    public GNode getStartGNode() {
+        return startGNode;
     }
 
     public int getEdgeID() { return edgeID; }

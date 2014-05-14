@@ -41,7 +41,8 @@ public class Driver {
     public static void main(String [ ] args){
         Ant[] AntColony;                                    // инициализация колонии муравьев.
 
-        GGraph testGGraph = new GGraph(5,10);            // создание тестового графа
+        GGraph testGGraph = new GGraph(10, 20);            // создание тестового графа
+        testGGraph.adjust();                               // пружины
 
         AntColony = new Ant[1];                            // содание колонии
 
