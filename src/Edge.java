@@ -9,7 +9,7 @@
 class Edge {
 
     private static int  edgesCount = 0;
-    private int edgeWeight;
+    private double weight;
     public int edgeID;
 
     private GNode startGNode,
@@ -22,11 +22,14 @@ class Edge {
         this.edgeID = edgesCount;
         edgesCount++;
         this.finishGNode = finishGNode;
-        edgeWeight = 1;
+        weight = 1;
     }
 
-    public int getEdgeWeight(){
-        return edgeWeight;
+    public double getWeight(){
+        return weight;
+    }
+    public void setWeight (double weight) {
+        this.weight = weight;
     }
 
     public synchronized void setPheromonLevel(float pheromoneUp){

@@ -1,7 +1,12 @@
 /**
  * Created by Ринат on 07.04.14.
  */
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Random;
+import java.util.Scanner;
+
 /**
  * Created by Павел  on 04.04.14.
  * Created by Ринат on 07.04.14.
@@ -60,6 +65,63 @@ public class GGraph {
             gNodesArray[k].addOut(gNodesArray[j]);
         }
     }
+
+
+    // Не случайный конструктор графа.
+    public GGraph (int nodesCount) {
+        gNodesArray = new GNode[nodesCount];
+        this.nodesCount = nodesCount;
+
+        n = a = m = b = c = 1;
+        n = 100000000;
+        a = 1;
+        m = 1;
+        b = 1;
+        c = 1000000000;
+
+        left_edge = 0;
+        right_edge = 800;
+        upper_edge = 0;
+        down_edge = 600;
+
+        for(int id = 0; id <= (nodesCount - 1); id++){        //создаем заданное количество  вершин
+            Random rand = new Random();
+            int x = 40 + rand.nextInt(800 - 2*40 - 10);       //подумать над связью  с окнами, рисуемыми в GUI
+            int y = 40 + rand.nextInt(600 - 3*40 - 10);       //от fringe до writer.height - nodeDiameter
+            gNodesArray[id] = new GNode(x , y);
+        }
+    }
+
+    // функция, читающая файл, на выходе получаем граф. Координаты точек вершин расставляются случ. образом.
+    public static GGraph myread(){
+        try {
+            File file = new File("C:\\Users\\Ринат\\Desktop\\test.txt");  // ссылка на файл где будет лежать данные
+            FileReader fr = new FileReader(file);                         // класс FileReader для считывания данных
+            Scanner sc = new Scanner(file);                               // класс Scanner - для удобства считывания            if (sc.hasNextInt()) {                // возвращает истинну если с потока ввода можно считать целое число
+            int sizeOfGraph = sc.nextInt();   // считывает  целое число с потока ввода и сохраняем в переменнуюSystem.out.println(sizeOfGraph);
+            GGraph gGraph = new GGraph(sizeOfGraph);                  // создаем граф с заданным размером
+
+            while (sc.hasNext() ) {                                    // добавляем ребро с весом к графу
+                int i = sc.nextInt();
+                int j = sc.nextInt();
+                double weight = sc.nextDouble();
+                gGraph.addEdge(i-1, j-1, weight);
+            }
+            System.out.println("Я вышел");
+            fr.close();
+            return gGraph;
+        } catch (IOException e) {
+            System.out.println("I/O error" + e);                          // ошибка на наличие файла
+            return null;
+        }
+    }
+
+    // функция, создающая связь между двумя вершинами
+    public void addEdge(int i, int j, double weight){         //на входе номера вершин для соединения и вес ребра
+        gNodesArray[i].addOut(gNodesArray[j]);
+        gNodesArray[i].getConnectingEdge(j).setWeight(weight);
+    }
+
 
     public GNode getGNode(int id){            // возвращает вершину под указанным номером.
         return this.gNodesArray[id];

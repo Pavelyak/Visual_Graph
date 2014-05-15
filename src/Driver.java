@@ -1,6 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.*;
+import java.io.*;
+import java.util.Scanner;
 
 
 /**
@@ -37,19 +41,20 @@ public class Driver {
         appwin.setVisible(true);                           // делаем видимым
     }
 
-
     public static void main(String [ ] args){
-        Ant[] AntColony;                                    // инициализация колонии муравьев.
+        Ant[] AntColony;                                   // инициализация колонии муравьев.
 
-        GGraph testGGraph = new GGraph(5, 20);            // создание тестового графа
+        //GGraph testGGraph = new GGraph(5, 20);           // создание тестового графа
+        GGraph testGGraph = GGraph.myread();               // тестовый граф считанный из файла
         testGGraph.adjust();                               // пружины
+        AntColony = new Ant[3];                            // содание колонии
 
-        AntColony = new Ant[5];                            // содание колонии
-
-        System.out.println("граф создан");                  // сервисная информация
+        System.out.println("граф создан");                 // сервисная информация
 
         Unconscious Un1 = new Unconscious(testGGraph,AntColony);    // создание бессознательного
         Un1.start();                                      // старт потока
         new Driver(testGGraph, AntColony);                // визуализация тест. графа
+
+
     }
 }

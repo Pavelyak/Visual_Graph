@@ -141,7 +141,7 @@ public class Ant extends Thread {
             for(int i = 0; i < allowedWay.size(); i++ ){
                 Edge currentEdge = currentNode.getConnectingEdge(allowedWay.get(i));
                 fullprobablity += (Math.pow(currentEdge.getPheromonLevel() , alpha))
-                                *(Math.pow(currentEdge.getEdgeWeight() ,beta));
+                                *(Math.pow(currentEdge.getWeight() ,beta));
             }
             System.out.println("fullprobablity" + fullprobablity);
 
@@ -150,7 +150,7 @@ public class Ant extends Thread {
                 for(int i = 0; i < allowedWay.size() ; i++ ){
                     Edge currentEdge = currentNode.getConnectingEdge(allowedWay.get(i));
                     probablities.add(probablities.get(i) + (Math.pow(currentEdge.getPheromonLevel(), alpha)/ fullprobablity)
-                                                         * (Math.pow(currentEdge.getEdgeWeight() , beta)));
+                                                         * (Math.pow(currentEdge.getWeight() , beta)));
                     System.out.println("probablity " + i + + probablities.get(i+1) );
                 }
             }
@@ -205,7 +205,7 @@ public class Ant extends Thread {
             System.out.print("I`m in this NODE" + currentNode.getId());
             System.out.println("Поменяно");
             route.add(currentNode.getId());
-            routeLength += nextEdge.getEdgeWeight();
+            routeLength += nextEdge.getWeight();
             System.out.print("while visiting next NODE Starting from NODE " + startNode.getId());
         }
 
