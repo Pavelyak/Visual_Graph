@@ -1,7 +1,7 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Scanner;
 
 
 /**
@@ -83,6 +83,8 @@ public class Unconscious extends Thread {
     public void makeIteration(){
 
         iterationFinished = false;
+        Hashtable GeneticCode = readCode();
+        System.out.println(GeneticCode);
 
 
         for (int i = 0; i < AntColony.length; i++ ){        // инициализация муравьев.
@@ -119,8 +121,14 @@ public class Unconscious extends Thread {
                     writer.newLine();
                     writer.write(AntColony[i].route.toString());
                     writer.newLine();
+                    // невыровненный вывод кода.
+                    for (int j = 0; j < AntColony[i].route.size(); j++){
+                        String buf = new String();
+                        System.out.println(GeneticCode.get(AntColony[i].route.get(j)).toString());
+                        buf = GeneticCode.get(AntColony[i].route.get(j)).toString();
+                        writer.write(buf);
+                    }
                     writer.flush();
-                    //f0.write(AntColony[i].route.toString());
                     System.out.println("Записано в файл");
                 }
             }
@@ -140,6 +148,9 @@ public class Unconscious extends Thread {
             }
         }
 
+
+
+
         //останавливаем потоки.
         for (int i = 0; i < AntColony.length; i++){
             AntColony[i].stop();
@@ -147,6 +158,28 @@ public class Unconscious extends Thread {
 
         System.out.println("Закончилась итерация " + iterationsNum);
 
+    }
+
+    public static Hashtable readCode(){
+        try {
+            File file = new File("C:\\Users\\Killon\\Desktop\\code.txt");  // ссылка на файл где будет лежать генетический код
+            FileReader fr = new FileReader(file);                         // класс FileReader для считывания данных
+            Scanner sc = new Scanner(file);                               // класс Scanner - для удобства считывания            if (sc.hasNextInt()) {                // возвращает истинну если с потока ввода можно считать целое число
+            int sizeOfHash = sc.nextInt();   // считывает  целое число с потока ввода и сохраняем в переменнуюSystem.out.println(sizeOfGraph);
+            Hashtable<Integer,String> geneticCode = new Hashtable(sizeOfHash);                // создаем граф с заданным размером
+
+            while (sc.hasNext() ) {                                    // добавляем ребро с весом к графу
+                int i = sc.nextInt();
+                String j = sc.nextLine();
+                geneticCode.put(i, j);
+            }
+            System.out.println("Я вышел");
+            fr.close();
+            return geneticCode;
+        } catch (IOException e) {
+            System.out.println("I/O error" + e);                          // ошибка на наличие файла
+            return null;
+        }
     }
 }
 
