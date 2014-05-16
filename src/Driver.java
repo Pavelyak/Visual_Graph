@@ -47,7 +47,7 @@ public class Driver {
         //GGraph testGGraph = new GGraph(5, 20);           // создание тестового графа
         GGraph testGGraph = GGraph.myread();               // тестовый граф считанный из файла
         testGGraph.adjust();                               // пружины
-        AntColony = new Ant[3];                            // содание колонии
+        AntColony = new Ant[15];                            // содание колонии
 
         System.out.println("граф создан");                 // сервисная информация
 

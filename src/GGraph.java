@@ -105,7 +105,7 @@ public class GGraph {
                 int i = sc.nextInt();
                 int j = sc.nextInt();
                 double weight = sc.nextDouble();
-                gGraph.addEdge(i-1, j-1, weight);
+                gGraph.addEdge(i, j, weight);
             }
             System.out.println("Я вышел");
             fr.close();
@@ -130,7 +130,7 @@ public class GGraph {
 
 
     public int getgNodesArraySize(){
-        return gNodesArray.length-1;
+        return gNodesArray.length;
     }
 
     public int getNodesCount(){

@@ -10,10 +10,10 @@ import java.util.Random;
 
 public class Ant extends Thread {
     GGraph graph;
-    private final double alpha = 0.5,        // указываем параметры алгоритма.
-                         beta  = 0.5,
-                         pheromoneMax = 5;  // регулируемый параметр для феромонов.
-    private final double nodesPercentToFinish = 0.8;  // сколько должен пройти муравей, чтоб завершить итерацию.
+    private final double alpha = 0.9,        // указываем параметры алгоритма. Альфа - феромоны
+                         beta  = 0.5,        // Бета - длина пути
+                         pheromoneMax = 14;  // регулируемый параметр для феромонов.
+    private final double nodesPercentToFinish = 0.0;  // сколько должен пройти муравей, чтоб завершить итерацию.
 
 
     private long routeLength = 0;
@@ -219,8 +219,8 @@ public class Ant extends Thread {
     }
 
     public void putPheromones(){
-        for(int i = 0; i<= edgesVisited.size() - 1; i++){
-            edgesVisited.get(i).setPheromonLevel( (float)pheromoneMax/routeLength);
+        for(int i = 0; i< edgesVisited.size() ; i++){
+            edgesVisited.get(i).setPheromonLevel((float)(pheromoneMax*edgesVisited.size()-pheromoneMax/routeLength));
             System.out.println("Оставил феромоны");
         }
     }
