@@ -27,14 +27,13 @@ public class GraphWriter extends Canvas implements Runnable {
         this.fringe = fringe;
         this.graph = graph;
         this.AntColony = AntColony;
-        new Thread(this).start();
+        //new Thread(this).start();
     }
 
 
 
     // отрисовка
     public void paint(Graphics g) {
-        Logger.global.info("@ => paint in dGraphWriter");        // вывод в консольку об отрисовке
         this.g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,     // хз, что это
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -61,13 +60,14 @@ public class GraphWriter extends Canvas implements Runnable {
                 arrow.draw(g2);
             }
             // обновляем
-            update(g2);
+            //update(g2);
         }
     }
 
-    // функция, делающая перерисовку муравьев
+    // функция, делающая перерисовку муравьев отдельным потоком
     public void update(Graphics g) {
         //Logger.global.info("@ => update in dGraphWriter");
+        new Thread(this).start();
         Graphics2D g2 = (Graphics2D) g;
         double phlev;
 
@@ -97,11 +97,10 @@ public class GraphWriter extends Canvas implements Runnable {
 
             g2.setStroke(new BasicStroke(0.2f + (float)phlev));
             }
-            else{
-            g2.setStroke(new BasicStroke(0.2f));}
-
+            else {
+            g2.setStroke(new BasicStroke(0.2f));
             g2.drawLine(posX1, posY1, posX2, posY2);
-
+            }
         }
     }
 
@@ -114,30 +113,4 @@ public class GraphWriter extends Canvas implements Runnable {
             } catch (InterruptedException ex) {}
         }
     }
-
-        /*for (GraphNode node : nodes) {
-            double posX = getXPos(node.getX());
-            double posY = getYPos(node.getY());
-            for (Enumeration<GraphNode> e = node.getNeighbours();
-                 e.hasMoreElements();) {
-                GraphNode neighbour = e.nextElement();
-                g2.setColor(Color.black);
-                Arrow2D arrow = new Arrow2D(posX, posY,
-                        getXPos(neighbour.getX()),
-                        getYPos(neighbour.getY()),
-                        nodeDiamter/2);
-                arrow.draw(g2);
-            }
-            g2.setColor(Color.green); // Node color
-
-            posX -= nodeDiamter/2;
-            posY -= nodeDiamter/2;
-            g2.fill(new Ellipse2D.Double(posX, posY, nodeDiamter, nodeDiamter));*/
-
-    //g2.setColor(Color.black); // Label color
-    //g2.drawString(node.getName(), (int) posX, (int) posY);// + " at (" + (int) posX + ", " + (int) posY + ")"
-
-    //update(g2);
-
-
 }

@@ -39,7 +39,14 @@ public class AppWindow extends JFrame implements ActionListener  {
         buttonsPanel.add(paintBtn);
         paintBtn.addActionListener(this);                // Добавляем слушателя к кнопке, который следит за нажатием.
         paintBtn.setFocusable(false);                    // На кнопку не наведен фокус.
-        mainPanel.add(buttonsPanel, BorderLayout.NORTH); // Добавляем кнопочную панель вверху окна.
+
+        //Кнопка алгоритма
+        JButton btn = new JButton("Алгоритм");
+        buttonsPanel.add(btn);
+        btn.addActionListener(this);
+        paintBtn.setFocusable(false);
+
+        mainPanel.add(buttonsPanel, BorderLayout.NORTH); // Добавляем кнопочную панель вверху окна
 
         // финальные шаги
         add(mainPanel);                                  // Добавление панели к окну
@@ -58,6 +65,10 @@ public class AppWindow extends JFrame implements ActionListener  {
             paintGraph(graph, antColony);            // Отображение графа на экране
             paintBtn.setVisible(false);              // Исчезновение кнопки
         }
+        if (str.equals("Алгоритм")) {
+           Main.unconsciousStart(graph, antColony);  // Старт муравьев
+           graphWriter.update(getGraphics());        // Отрисовка муравьев
+        }
     }
 
     //Функция, реализующая отрисовку графа при нажатии на кнопуу
@@ -65,6 +76,7 @@ public class AppWindow extends JFrame implements ActionListener  {
 
         // создаем graphWriter - Canvas на котором происходит отрисовка
         int fringe = 40;                                      // размер рамки
+        graph.adjust();                                       // Расставление точек с помощью пружин
         graphWriter = new GraphWriter(800, 600, fringe,       // Размер области рисования. Он пока не масшабируется
                                       graph, AntColony);      // Экземпляры класса графа и муравьиной колонии
 

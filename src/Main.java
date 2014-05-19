@@ -13,17 +13,10 @@ import java.util.Scanner;
  */
 public class Main {
 
-    public static void main(String [ ] args){
+    public static void main(String [] args){
         final Ant[] AntColony;                                   // инициализация колонии муравьев.
         final GGraph testGGraph = GGraph.myread();               // тестовый граф считанный из файла
-
-        testGGraph.adjust();                                     // пружины
         AntColony = new Ant[15];                                 // содание колонии
-
-        System.out.println("граф создан");                       // сервисная информация
-
-        Unconscious Un1 = new Unconscious(testGGraph,AntColony);    // создание бессознательного
-        Un1.start();                                                // старт потока
 
         // Создание окна отдельным потоком
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -31,5 +24,10 @@ public class Main {
                 new AppWindow(testGGraph, AntColony);
             }
         });
+    }
+    // Функция запускающая муравьев
+    public static void unconsciousStart(GGraph testGGraph, Ant[] AntColony){
+        Unconscious Un1 = new Unconscious(testGGraph, AntColony);    // создание бессознательного
+        Un1.start();                                                 // старт потока
     }
 }
