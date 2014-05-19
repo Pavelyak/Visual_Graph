@@ -90,7 +90,7 @@ public class GraphWriter extends Canvas implements Runnable {
 
             if(AntColony[i].getVisitedEdge() != null ){
                 if( AntColony[i].getVisitedEdge().getPheromonLevel() != 0.0){
-                    phlev = Math.log((AntColony[i].getVisitedEdge().getPheromonLevel()));
+                    phlev = Math.log((AntColony[i].getVisitedEdge().getPheromonLevel()) + 1);
                 }
                 else
                     phlev = 0;

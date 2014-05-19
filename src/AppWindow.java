@@ -1,9 +1,12 @@
+import visualGraph.src.Graph;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.event.*;
+import java.io.*;
 
 /**
  * Created by Ринат on 14.03.14.
@@ -44,7 +47,13 @@ public class AppWindow extends JFrame implements ActionListener  {
         JButton btn = new JButton("Алгоритм");
         buttonsPanel.add(btn);
         btn.addActionListener(this);
-        paintBtn.setFocusable(false);
+        btn.setFocusable(false);
+
+        //Кнопка выбора файла
+        JButton btnFile = new JButton("Выбрать файл");
+        buttonsPanel.add(btnFile);
+        btnFile.addActionListener(this);
+        btnFile.setFocusable(false);
 
         mainPanel.add(buttonsPanel, BorderLayout.NORTH); // Добавляем кнопочную панель вверху окна
 
@@ -65,9 +74,17 @@ public class AppWindow extends JFrame implements ActionListener  {
             paintGraph(graph, antColony);            // Отображение графа на экране
             paintBtn.setVisible(false);              // Исчезновение кнопки
         }
-        if (str.equals("Алгоритм")) {
+        else if (str.equals("Алгоритм")) {
            Main.unconsciousStart(graph, antColony);  // Старт муравьев
            graphWriter.update(getGraphics());        // Отрисовка муравьев
+        }
+        else if (str.equals("Выбрать файл")) {
+            JFileChooser fileopen = new JFileChooser();
+            int ret = fileopen.showDialog(null, "Открыть файл");
+            if (ret == JFileChooser.APPROVE_OPTION) {
+                File file = fileopen.getSelectedFile();
+                graph = GGraph.myread(file);
+            }
         }
     }
 
