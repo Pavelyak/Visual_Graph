@@ -95,7 +95,7 @@ public class GGraph {
     // функция, читающая файл, на выходе получаем граф. Координаты точек вершин расставляются случ. образом.
     public static GGraph myread(){
         try {
-            File file = new File("C:\\Users\\Killon\\Desktop\\test.txt");  // ссылка на файл где будет лежать данные
+            File file = new File("C:\\Users\\Ринат\\Desktop\\test.txt");  // ссылка на файл где будет лежать данные
             FileReader fr = new FileReader(file);                         // класс FileReader для считывания данных
             Scanner sc = new Scanner(file);                               // класс Scanner - для удобства считывания            if (sc.hasNextInt()) {                // возвращает истинну если с потока ввода можно считать целое число
             int sizeOfGraph = sc.nextInt();   // считывает  целое число с потока ввода и сохраняем в переменнуюSystem.out.println(sizeOfGraph);
