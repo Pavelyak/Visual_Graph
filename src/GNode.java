@@ -25,35 +25,24 @@ public class GNode  {
         this.y = y;
     }
     // возвращают координаты GNode
-    public int getX(){
+    public synchronized int getX(){
         return this.x;
     }
 
-    public void setX(int x){
+    public synchronized void setX(int x){
         this.x = x;
     }
 
-    public int getY(){
+    public synchronized int getY(){
         return this.y;
     }
 
-    public void setY(int y){
+    public synchronized void setY(int y){
         this.y = y;
     }
 
-    public synchronized void setPheromonLevel(){
-        pheromonLevel += 0.5;
-    }
 
-    public void evaporatePheromon(){
-        pheromonLevel = pheromonLevel * (float)0.95 ; //испарение на 5%
-    }
-
-    public float getPheromonLevel(){
-        return pheromonLevel;
-    }
-
-    public int getId() {return id;}
+    public synchronized int getId() {return id;}
 
 
     /*public void printLinks(){                                  // печатает id всех входящих и выходящих вершины

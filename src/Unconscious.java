@@ -20,8 +20,8 @@ public class Unconscious extends Thread {
     private int stoppedAnts;
     private int workingAnts;
     private boolean iterationFinished = false;
-    ArrayList<Integer> maxRoute;
-    ArrayList<Integer> minRoute;
+    //ArrayList<Integer> maxRoute;
+    //ArrayList<Integer> minRoute;
     Hashtable<Integer, String> GeneticCode;
     String[][] dataMax;
     String[][] dataMin;
@@ -231,7 +231,7 @@ public class Unconscious extends Thread {
 
     public static Hashtable readCode(){
         try {
-            File file = new File("C:\\Users\\Killon\\Desktop\\code.txt");  // ссылка на файл где будет лежать генетический код
+            File file = new File("C:\\Users\\Killon\\Desktop\\qu.txt");  // ссылка на файл где будет лежать генетический код
             FileReader fr = new FileReader(file);                         // класс FileReader для считывания данных
             Scanner sc = new Scanner(file);                               // класс Scanner - для удобства считывания            if (sc.hasNextInt()) {                // возвращает истинну если с потока ввода можно считать целое число
             int sizeOfHash = sc.nextInt();   // считывает  целое число с потока ввода и сохраняем в переменнуюSystem.out.println(sizeOfGraph);
