@@ -23,6 +23,8 @@ public class AppWindow extends JFrame implements ActionListener  {
     public JButton paintBtn;                // Кнопка отрисовки
     private TaskSprings taskSprings;
     private JProgressBar progressBar;
+    private TextField textIteration;
+    private JPanel textPanel;
 
     // Конструктор базового окна.
     public AppWindow(GGraph graph, Ant[] antColony) {
@@ -59,7 +61,21 @@ public class AppWindow extends JFrame implements ActionListener  {
         btnFile.addActionListener(this);
         btnFile.setFocusable(false);
 
+        //ProgressBar
+        progressBar = new JProgressBar();
+        mainPanel.add(progressBar, BorderLayout.SOUTH);
+
         mainPanel.add(buttonsPanel, BorderLayout.NORTH); // Добавляем кнопочную панель вверху окна
+
+        //Текстовые поля
+        textPanel = new JPanel(new GridLayout(20, 1));     // 20 строк, 1 столбец в менеджере компоновки
+        Label lblIteration = new Label("Iteration");
+        textIteration = new TextField();
+        textIteration.addActionListener(this);
+        textPanel.add(lblIteration);
+        textPanel.add(textIteration);
+
+        mainPanel.add(textPanel, BorderLayout.EAST);       // На западе
 
         // финальные шаги
         add(mainPanel);                                  // Добавление панели к окну
@@ -71,7 +87,7 @@ public class AppWindow extends JFrame implements ActionListener  {
             System.exit(0);
         }
     }
-
+    // Класс, выполняющий задание - расположение вершин. Все делается в отдельном потоке.
     class TaskSprings extends SwingWorker<Void, Void> {
         @Override
         public Void doInBackground() {
@@ -93,27 +109,22 @@ public class AppWindow extends JFrame implements ActionListener  {
     public void actionPerformed(ActionEvent ae) {    // Функция, реализующая действия при нажатии на кнопку
         String str = ae.getActionCommand();
         if (str.equals("Начать отрисовку")) {
-            /*// Запуск отрисовки отдельным потоком чтобы программа реагировала на децствие пользователя в GUI
-            Thread t = new Thread() {
-                public void run() {
-                    graph.adjust();                          // Расставление точек с помощью пружин
-                    paintGraph(graph, antColony);            // Отображение графа на экране
-                }
-            };
-            t.start();*/
             paintBtn.setVisible(false);                      // Исчезновение кнопки
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            progressBar = new JProgressBar();
-            progressBar.setIndeterminate(true);
-            mainPanel.add(progressBar, BorderLayout.SOUTH);
+            progressBar.setIndeterminate(true);              // Бесконечный ПрогрессБар
 
+            //Выполнение задания - отрисовки
             taskSprings = new TaskSprings();
             taskSprings.execute();
         }
         else if (str.equals("Алгоритм")) {
-           Main.unconsciousStart(graph, antColony);  // Старт муравьев
 
-           // Запуск отрисовки отдельным потоком чтобы программа реагировала на деqствие пользователя в GUI
+            progressBar.setStringPainted(true);
+            progressBar.setMinimum(0);
+            progressBar.setMaximum(100);
+            Main.unconsciousStart(graph, antColony);  // Старт муравьев
+            // Запуск отрисовки муравьев отдельным потоком
+            // чтобы программа реагировала на действие пользователя в GUI
             Thread t = new Thread(graphWriter);
             t.start();
         }
@@ -123,6 +134,17 @@ public class AppWindow extends JFrame implements ActionListener  {
             if (ret == JFileChooser.APPROVE_OPTION) {
                 File file = fileopen.getSelectedFile();
                 graph = GGraph.myread(file);
+            }
+        }
+        else if (ae.getSource() == textIteration){
+            // Перевод строки из поля в число
+            String strInt = textIteration.getText();
+            try {
+                int iteration = Integer.parseInt(strInt);
+                Unconscious.setIterationsLimit(iteration);  // Установка макс. лимита
+                textIteration.setEnabled(false);
+            } catch (NumberFormatException e) {
+                System.err.println("Неверный формат строки!");
             }
         }
     }

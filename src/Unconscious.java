@@ -15,7 +15,7 @@ public class Unconscious extends Thread {
     GGraph graph;
     Ant[] AntColony;
     private static int iterationsNum;
-    private final int  iterationsLimit = 500;
+    public static int  iterationsLimit = 500;
     private int colonySize ;
     private int stoppedAnts;
     private int workingAnts;
@@ -285,6 +285,9 @@ public class Unconscious extends Thread {
         catch (IOException e) {
             System.out.println("IOEXCEPTION occured");
         }
+    }
+    public static void setIterationsLimit(int iterationsLimit) {
+        Unconscious.iterationsLimit = iterationsLimit;
     }
 }
 

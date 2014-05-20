@@ -15,7 +15,7 @@ public class Main {
 
     public static void main(String [] args){
         final Ant[] AntColony;                                   // инициализация колонии муравьев.
-        final GGraph testGGraph ;               // тестовый граф считанный из файла
+        final GGraph testGGraph ;                                // тестовый граф считанный из файла
         AntColony = new Ant[15];                                 // содание колонии
 
         // Создание окна отдельным потоком
