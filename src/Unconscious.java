@@ -15,7 +15,7 @@ public class Unconscious extends Thread {
     GGraph graph;
     Ant[] AntColony;
     private static int iterationsNum;
-    private final int  iterationsLimit = 10000;
+    private final int  iterationsLimit = 500;
     private int colonySize ;
     private int stoppedAnts;
     private int workingAnts;

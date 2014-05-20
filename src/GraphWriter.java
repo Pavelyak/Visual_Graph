@@ -67,7 +67,7 @@ public class GraphWriter extends Canvas implements Runnable {
     // функция, делающая перерисовку муравьев отдельным потоком
     public void update(Graphics g) {
         //Logger.global.info("@ => update in dGraphWriter");
-        new Thread(this).start();
+        //new Thread(this).start();
         Graphics2D g2 = (Graphics2D) g;
         double phlev;
 

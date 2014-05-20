@@ -112,7 +112,10 @@ public class AppWindow extends JFrame implements ActionListener  {
         }
         else if (str.equals("Алгоритм")) {
            Main.unconsciousStart(graph, antColony);  // Старт муравьев
-           graphWriter.update(getGraphics());        // Отрисовка муравьев
+
+           // Запуск отрисовки отдельным потоком чтобы программа реагировала на деqствие пользователя в GUI
+            Thread t = new Thread(graphWriter);
+            t.start();
         }
         else if (str.equals("Выбрать файл")) {
             JFileChooser fileopen = new JFileChooser();
