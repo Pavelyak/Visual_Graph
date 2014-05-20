@@ -297,8 +297,26 @@ public class GGraph {
 
     }
     private int find_best_spot(int i){
-        //TODO
-        return 0;
+        int min_x = 0;
+        int min_y = 0;
+        int ret = 0;
+        double en = energy(i, gNodesArray[i].getX(), gNodesArray[i].getY());
+        for (int x = left_edge; x < right_edge; ++x) {
+            for (int y = upper_edge; y < down_edge; ++y) {
+                double en1 = energy(i, x, y);
+                if (en1 < en){
+                    min_x = x;
+                    min_y = y;
+                    en = en1;
+                    ret = 1;
+                }
+            }
+        }
+        if(ret == 1){
+            gNodesArray[i].setX(min_x);
+            gNodesArray[i].setY(min_y);
+        }
+        return ret;
     }
 
     private int global_adjust() {
