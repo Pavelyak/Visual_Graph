@@ -25,7 +25,7 @@ public class GNode  {
         this.y = y;
     }
     // возвращают координаты GNode
-    public synchronized int getX(){
+    public int getX(){
         return this.x;
     }
 
@@ -33,7 +33,7 @@ public class GNode  {
         this.x = x;
     }
 
-    public synchronized int getY(){
+    public int getY(){
         return this.y;
     }
 
@@ -42,7 +42,7 @@ public class GNode  {
     }
 
 
-    public synchronized int getId() {return id;}
+    public int getId() {return id;}
 
 
     /*public void printLinks(){                                  // печатает id всех входящих и выходящих вершины

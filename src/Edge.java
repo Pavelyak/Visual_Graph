@@ -40,7 +40,7 @@ class Edge {
         pheromonLevel = pheromonLevel * (float)0.95 ; //испарение на 5%
     }
 
-    public float getPheromonLevel(){
+    public  float getPheromonLevel(){
         return pheromonLevel;
     }
 
