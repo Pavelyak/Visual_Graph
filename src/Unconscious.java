@@ -15,7 +15,7 @@ public class Unconscious extends Thread {
     GGraph graph;
     Ant[] AntColony;
     private static int iterationsNum;
-    private final int  iterationsLimit = 1000;
+    private final int  iterationsLimit = 10000;
     private int colonySize ;
     private int stoppedAnts;
     private int workingAnts;
@@ -129,11 +129,12 @@ public class Unconscious extends Thread {
 
         try{
             BufferedWriter writer;
-            writer = new BufferedWriter(new FileWriter("C:\\Users\\Killon\\Desktop\\Проект\\Testingcolony.txt",true));
+            writer = new BufferedWriter(new FileWriter("C:\\Users\\Killon\\Desktop\\Проект\\Lalka.txt",true));
             //запись успешных путей муравеек
             String source = " Я муравей ";
             String source2 = " успешный и мой маршрут\n";
             String source3 = new java.util.Date().toString ();
+            String source4 = " неуспешный\n";
 
             writer.newLine();
             writer.write("Experiment at " + source3 );
@@ -218,7 +219,9 @@ public class Unconscious extends Thread {
         // Оставляем феромоны.
         // И одновременно останавливаем потоки исполнения муравьев.
         for (int i = 0; i < AntColony.length; i++){
-            AntColony[i].putPheromones();
+            if(AntColony[i].isSuccessful()){
+                AntColony[i].putPheromones();
+            }
             AntColony[i].stop();
         }
 

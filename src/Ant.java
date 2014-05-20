@@ -10,9 +10,9 @@ import java.util.Random;
 
 public class Ant extends Thread {
     GGraph graph;
-    private final double alpha = 0.9,        // указываем параметры алгоритма. Альфа - феромоны
-                         beta  = 0.5,        // Бета - длина пути
-                         pheromoneMax = 14;  // регулируемый параметр для феромонов.
+    private final double alpha = 0.5,        // указываем параметры алгоритма. Альфа - феромоны
+                         beta  = 1,        // Бета - длина пути
+                         pheromoneMax = 10;  // регулируемый параметр для феромонов.
     private final double nodesPercentToFinish = 0.0;  // сколько должен пройти муравей, чтоб завершить итерацию.
 
 

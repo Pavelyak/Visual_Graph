@@ -16,18 +16,18 @@ public class GGraph {
     private  int nodesCount;
     private  int linksCount;
 
-//   borders: c/r within borders, infinity otherwise
-          //   not connected points: n/(r^a)
-                    //   connected points: m*(r^b)
-                    //   for initial tests m=n=1, a=b=1;
-                //parameters for adjusting graph//
+    //   borders: c/r within borders, infinity otherwise
+    //   not connected points: n/(r^a)
+    //   connected points: m*(r^b)
+    //   for initial tests m=n=1, a=b=1;
+    //parameters for adjusting graph//
     private double n;
     private double a;
     private double m;
     private double b;
     private double c;
 
-        //borders for graph*/
+    //borders for graph*/
     private int right_edge;
     private int left_edge;
     private int upper_edge;
@@ -347,4 +347,4 @@ public class GGraph {
         //int delta = 1;
         //while (delta>0){
     }
-    }
+}

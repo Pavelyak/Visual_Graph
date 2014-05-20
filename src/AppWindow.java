@@ -1,4 +1,4 @@
-import visualGraph.src.Graph;
+
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -28,7 +28,7 @@ public class AppWindow extends JFrame implements ActionListener  {
         this.antColony = antColony;
 
         addWindowListener(new MyWindowAdapter());        // регистрация оконного слушателя, нужный при закрытии окна.
-        this.setSize(800, 600);                          // установка размера
+        this.setSize(900, 700);                          // установка размера
 
         //Создание главной панели
         mainPanel = new JPanel();
@@ -71,8 +71,18 @@ public class AppWindow extends JFrame implements ActionListener  {
     public void actionPerformed(ActionEvent ae) {    // Функция, реализующая действия при нажатии на кнопку
         String str = ae.getActionCommand();
         if (str.equals("Начать отрисовку")) {
-            paintGraph(graph, antColony);            // Отображение графа на экране
+            // Запуск отрисовки отдельным потоком чтобы программа реагировала на децствие пользователя в GUI
+            Thread t = new Thread() {
+                public void run() {
+                    graph.adjust();                          // Расставление точек с помощью пружин
+                    paintGraph(graph, antColony);            // Отображение графа на экране
+                }
+            };
+            t.start();
             paintBtn.setVisible(false);              // Исчезновение кнопки
+            JProgressBar progressBar = new JProgressBar();
+            progressBar.setIndeterminate(true);
+            mainPanel.add(progressBar, BorderLayout.SOUTH);
         }
         else if (str.equals("Алгоритм")) {
            Main.unconsciousStart(graph, antColony);  // Старт муравьев
@@ -93,7 +103,6 @@ public class AppWindow extends JFrame implements ActionListener  {
 
         // создаем graphWriter - Canvas на котором происходит отрисовка
         int fringe = 40;                                      // размер рамки
-        graph.adjust();                                       // Расставление точек с помощью пружин
         graphWriter = new GraphWriter(800, 600, fringe,       // Размер области рисования. Он пока не масшабируется
                                       graph, AntColony);      // Экземпляры класса графа и муравьиной колонии
 
