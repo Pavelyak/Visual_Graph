@@ -89,23 +89,3 @@ public class Arrow2D {
    }
 }
 
-//    // Returns the starting Point2D of this Line2D.
-//    public Point2D getP1() {
-//       return new Point2D.Double(x1, y1);
-//    }
-
-//    // Returns the end Point2D of this Line2D.
-//    public Point2D getP2() {}
-
-//    // Returns the X coordinate of the start point in double precision.
-//    public double getX1() {}
-
-//    // Returns the X coordinate of the end point in double precision.
-//    public double getX2() {}
-
-//    // Returns the Y coordinate of the start point in double precision.
-//    public double getY1() {}
-
-//    // Returns the Y coordinate of the end point in double precision.
-//    public double getY2() {}
-//}

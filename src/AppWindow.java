@@ -1,5 +1,7 @@
 
 
+import javafx.scene.control.ProgressBar;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -19,6 +21,8 @@ public class AppWindow extends JFrame implements ActionListener  {
     private Ant[] antColony;                // Экземпляр колонии
     public JPanel mainPanel;                // Панель в которой размещаются все остальные компоненты
     public JButton paintBtn;                // Кнопка отрисовки
+    private TaskSprings taskSprings;
+    private JProgressBar progressBar;
 
     // Конструктор базового окна.
     public AppWindow(GGraph graph, Ant[] antColony) {
@@ -68,21 +72,43 @@ public class AppWindow extends JFrame implements ActionListener  {
         }
     }
 
+    class TaskSprings extends SwingWorker<Void, Void> {
+        @Override
+        public Void doInBackground() {
+            graph.adjust();
+            paintGraph(graph, antColony);
+            return null;
+        }
+        /*
+         * Executed in event dispatching thread
+         */
+        @Override
+        public void done() {
+            Toolkit.getDefaultToolkit().beep();
+            setCursor(null);                         //turn off the wait cursor
+            progressBar.setVisible(false);
+        }
+    }
+
     public void actionPerformed(ActionEvent ae) {    // Функция, реализующая действия при нажатии на кнопку
         String str = ae.getActionCommand();
         if (str.equals("Начать отрисовку")) {
-            // Запуск отрисовки отдельным потоком чтобы программа реагировала на децствие пользователя в GUI
+            /*// Запуск отрисовки отдельным потоком чтобы программа реагировала на децствие пользователя в GUI
             Thread t = new Thread() {
                 public void run() {
                     graph.adjust();                          // Расставление точек с помощью пружин
                     paintGraph(graph, antColony);            // Отображение графа на экране
                 }
             };
-            t.start();
-            paintBtn.setVisible(false);              // Исчезновение кнопки
-            JProgressBar progressBar = new JProgressBar();
+            t.start();*/
+            paintBtn.setVisible(false);                      // Исчезновение кнопки
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            progressBar = new JProgressBar();
             progressBar.setIndeterminate(true);
             mainPanel.add(progressBar, BorderLayout.SOUTH);
+
+            taskSprings = new TaskSprings();
+            taskSprings.execute();
         }
         else if (str.equals("Алгоритм")) {
            Main.unconsciousStart(graph, antColony);  // Старт муравьев
@@ -110,7 +136,5 @@ public class AppWindow extends JFrame implements ActionListener  {
         mainPanel.add(graphWriter, BorderLayout.CENTER);      // Добавляем в центр панели
         mainPanel.revalidate();                               // Обновление панели
     }
-
-
 }
 
