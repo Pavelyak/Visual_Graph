@@ -110,10 +110,10 @@ public class Ant extends Thread {
             int j = 0;
             inRoute = false;
             int currentNodeID = currentNode
-                                .listOut.get(i)
+                                .listOut
+                                .get(i)
                                 .getFinishGNode()
-                                .getId()
-                                ;
+                                .getId();
 
             if (route.size() !=0 &&
                 currentNode.listOut.size() != 0 ){

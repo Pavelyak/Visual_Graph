@@ -133,7 +133,7 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
             Unconscious un1 = new Unconscious(graph, antColony);         // создание бессознательного
             un1.start();                                                 // старт потока
             un1.addPropertyChangeListener(this);
-            //graphWriter.update(getGraphics());        // Отрисовка муравьев
+            graphWriter.update(getGraphics());        // Отрисовка муравьев
 
         }
         else if (str.equals("Выбрать файл")) {

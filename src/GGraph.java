@@ -1,6 +1,3 @@
-/**
- * Created by Ринат on 07.04.14.
- */
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,6 +7,7 @@ import java.util.Scanner;
 /**
  * Created by Павел  on 04.04.14.
  * Created by Ринат on 07.04.14.
+ * алгорим пружинок Created by Манэ on 09.05.14
  */
 public class GGraph {
     private GNode[] gNodesArray;                                //  массив вершин

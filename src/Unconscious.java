@@ -16,20 +16,21 @@ public class Unconscious extends Thread {
     GGraph graph;                               // ссылка на граф
     Ant[] AntColony;                            // ссылка на колонию муравьев
     private static int iterationsNum;           // текущая итерация
-    public static int  iterationsLimit = 500;   // предел итераций по умолчанию
+    public  static int  iterationsLimit = 500;   // предел итераций по умолчанию
     private int colonySize                      // кол-во муравьев в колонии
               , stoppedAnts                     // кол-во умерших муравьев
-              , workingAnts                     // кол=во работающих муравьев
-              ;
+              , workingAnts;                     // кол=во работающих муравьев
+
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this); // поддержка слушателей
 
     Hashtable<Integer, String> GeneticCode;     // Хэш - таблица с генетическим кодом
 
-    String[][] dataMax;
-    String[][] dataMin;
-    String[][] dataAvg;
+    String[][] dataMax                         //Массив, содержащий длину максимального пути на итерациях
+             , dataMin                         //Массив, содержащий длину минимального пути на итерациях
+             , dataAvg;                        //Массив, содержащий длину среднего пути на итерациях
 
-    Integer[][][] overlaps;
+
+    Integer[][][] overlaps;                    //Массив, в который записываются перекрытия
 
     String Maximums = "C:\\Users\\Killon\\Desktop\\Проект\\Statistics\\Maximums.txt"
          , Minimums = "C:\\Users\\Killon\\Desktop\\Проект\\Statistics\\Minimums.txt"
@@ -43,12 +44,14 @@ public class Unconscious extends Thread {
     Unconscious(GGraph graph, Ant[] AntColony ){
         this.graph = graph;
         this.AntColony = AntColony;
-        colonySize = AntColony.length ;
         iterationsNum = 0;
+        colonySize = AntColony.length ;
+
         // считываем генетический код из файла
         GeneticCode = readCode();
-        // Записываем шапки двухмерных массивов статистики
+        //Считываем перекрытия из файла
         overlaps = readOverlap();
+        // Записываем шапки двухмерных массивов статистики
         dataMax = new String[iterationsLimit+1][2];
         dataMax[0][0] = source0;
         dataMax[0][1] = source1;
@@ -95,135 +98,24 @@ public class Unconscious extends Thread {
         }
     }
 
-    /* Функция, проверяющая количество работающих в данный момент муравьев в колонии.
-       Возвращает число остановившихся муравьев.
-      */
-    public int checkAnts(){
-        stoppedAnts = 0;
-        workingAnts = 0;
-        for (int i = 0; i < AntColony.length; i++){
-            if(AntColony[i].amAlive()){
-                workingAnts++;
-            }
-            else{
-                stoppedAnts++;
-            }
-        }
-        return stoppedAnts;
 
-    }
+
 
     public void makeIteration(){
-
-
         // инициализация муравьев.
-
-        for (int i = 0; i < AntColony.length; i++ ){
-            System.out.println("вход в цикл создания муравьев");
-            AntColony[i] = new Ant(graph);
-            AntColony[i].start();
-            System.out.println("Муравей создан" + i);
-        }
-
+        initialiseAnts();
         //ждем, пока все завершат работу
         while(checkAnts() != colonySize){}
-
-        System.out.println("Все муравьи завершили работу");
-
         //печатаем все успешные замкнутые маршруты в файлики.
-
-        try{
-            BufferedWriter writer;
-            writer = new BufferedWriter(new FileWriter("C:\\Users\\Killon\\Desktop\\Проект\\Lalka.txt",true));
-            //запись успешных путей муравеек
-            String source = " I`m ant ";
-            String source2 = " successful\n";
-            String source3 = new java.util.Date().toString ();
-
-
-            writer.newLine();
-            writer.write("Experiment at " + source3 );
-            writer.newLine();
-
-            for(int i = 0; i < AntColony.length; i ++){
-                if(AntColony[i].isSuccessful()){
-                    AntColony[i].route.add(0, AntColony[i].getStartNodeID()); // добавляем стартовую точку маршрута.
-                    writer.write(source + i + source2);
-                    writer.newLine();
-                    writer.write(AntColony[i].route.toString());
-                    writer.newLine();
-                    writer.write(GeneticCode.get(AntColony[i].route.get(0)));
-                    for(int j=0; j< AntColony[i].route.size()-1; j++ ){
-
-                        int currentNode = AntColony[i].route.get(j);
-                        int nextNode = AntColony[i].route.get(j+1);
-
-                        String s = GeneticCode.get(nextNode);
-                        char[] buf = new char[10];
-                        s.getChars(overlaps[currentNode][nextNode][0]+1,s.length(),buf,0);
-                        writer.write(buf);
-                    }
-
-                    writer.flush();
-                    System.out.println("Записано в файл");
-                }
-            }
-
-        }
-        catch (IOException e) {
-            System.out.println("IOEXCEPTION occured");
-        }
+        printSuccessfulAntsWays();
 
         // Секция аналитики.
         // Смотрим Максимальный, минимальный и средний путь колонии.
-        long maxRouteLength = 1;
-        long minRouteLength = AntColony[0].getRouteLength();
-        float avgRouteLength = 0;
-        float avgTemp = 0;
-        int successfulAnts = 0 ;
-        long max = 0;
-        long min = 0;
-
-        for(int i = 0; i < AntColony.length; i ++){
-                        // Находим максимальную и минимальную длину
-            if(AntColony[i].isSuccessful() && AntColony[i].getRouteLength() + 1 > max){
-                maxRouteLength = AntColony[i].getRouteLength()+1; //+1 потому что начальной точки в массиве Route нет
-            }
-            if(AntColony[i].isSuccessful() && AntColony[i].getRouteLength() +1 < min){
-                minRouteLength = AntColony[i].getRouteLength() + 1 ;
-                }
-            //Считаем среднюю длину пути
-            if(AntColony[i].isSuccessful()){
-                avgTemp+=AntColony[i].getRouteLength();
-                successfulAnts++;
-                }
-        }
-
-        try{
-            avgRouteLength = avgTemp / (float)successfulAnts;
-        }
-        catch (ArithmeticException e){
-            avgRouteLength = 0;
-        }
-        dataMax[iterationsNum][0]=String.valueOf(iterationsNum);
-        dataMax[iterationsNum][1]=String.valueOf(maxRouteLength);
-
-        dataMin[iterationsNum][0]=String.valueOf(iterationsNum);
-        dataMin[iterationsNum][1]=String.valueOf(minRouteLength);
-
-        dataAvg[iterationsNum][0]=String.valueOf(iterationsNum);
-        dataAvg[iterationsNum][1]=String.valueOf(avgRouteLength);
-
-
+        calculateStatistics();
 
         // Оставляем феромоны.
         // И одновременно останавливаем потоки исполнения муравьев.
-        for (int i = 0; i < AntColony.length; i++){
-            if(AntColony[i].isSuccessful()){
-                AntColony[i].putPheromones();
-            }
-            AntColony[i].stop();
-        }
+        stopColony();
 
         System.out.println("Закончилась итерация " + iterationsNum);
 
@@ -280,6 +172,45 @@ public class Unconscious extends Thread {
         }
     }
 
+    public void calculateStatistics(){
+        long maxRouteLength = 1;
+        long minRouteLength = AntColony[0].getRouteLength();
+        float avgRouteLength = 0;
+        float avgTemp = 0;
+        int successfulAnts = 0 ;
+        long max = 0;
+        long min = 0;
+
+        for(int i = 0; i < AntColony.length; i ++){
+            // Находим максимальную и минимальную длину
+            if(AntColony[i].isSuccessful() && AntColony[i].getRouteLength() + 1 > max){
+                maxRouteLength = AntColony[i].getRouteLength()+1; //+1 потому что начальной точки в массиве Route нет
+            }
+            if(AntColony[i].isSuccessful() && AntColony[i].getRouteLength() +1 < min){
+                minRouteLength = AntColony[i].getRouteLength() + 1 ;
+            }
+            //Считаем среднюю длину пути
+            if(AntColony[i].isSuccessful()){
+                avgTemp+=AntColony[i].getRouteLength();
+                successfulAnts++;
+            }
+        }
+
+        try{
+            avgRouteLength = avgTemp / (float)successfulAnts;
+        }
+        catch (ArithmeticException e){
+            avgRouteLength = 0;
+        }
+        dataMax[iterationsNum][0]=String.valueOf(iterationsNum);
+        dataMax[iterationsNum][1]=String.valueOf(maxRouteLength);
+
+        dataMin[iterationsNum][0]=String.valueOf(iterationsNum);
+        dataMin[iterationsNum][1]=String.valueOf(minRouteLength);
+
+        dataAvg[iterationsNum][0]=String.valueOf(iterationsNum);
+        dataAvg[iterationsNum][1]=String.valueOf(avgRouteLength);
+    }
 
     public void writeStatistics(){
         try{
@@ -317,6 +248,7 @@ public class Unconscious extends Thread {
             System.out.println("IOEXCEPTION occured");
         }
     }
+
     public static void setIterationsLimit(int iterationsLimit) {
         Unconscious.iterationsLimit = iterationsLimit;
     }
@@ -329,6 +261,87 @@ public class Unconscious extends Thread {
         pcs.firePropertyChange("progress", 0, progress);
     }
 
+    public void initialiseAnts(){
+        for (int i = 0; i < AntColony.length; i++ ){
+            System.out.println("вход в цикл создания муравьев");
+            AntColony[i] = new Ant(graph);
+            AntColony[i].start();
+            System.out.println("Муравей создан" + i);
+        }
+    }
+
+    public void printSuccessfulAntsWays(){
+        try{
+        BufferedWriter writer;
+        writer = new BufferedWriter(new FileWriter("C:\\Users\\Killon\\Desktop\\Проект\\Lalka.txt",true));
+        //запись успешных путей муравеек
+        String source = " I`m ant ";
+        String source2 = " successful\n";
+        String source3 = new java.util.Date().toString ();
+
+
+        writer.newLine();
+        writer.write("Experiment at " + source3 );
+        writer.newLine();
+
+        for(int i = 0; i < AntColony.length; i ++){
+            if(AntColony[i].isSuccessful()){
+                AntColony[i].route.add(0, AntColony[i].getStartNodeID()); // добавляем стартовую точку маршрута.
+                writer.write(source + i + source2);
+                writer.newLine();
+                writer.write(AntColony[i].route.toString());
+                writer.newLine();
+                writer.write(GeneticCode.get(AntColony[i].route.get(0)));
+                for(int j=0; j< AntColony[i].route.size()-1; j++ ){
+
+                    int currentNode = AntColony[i].route.get(j);
+                    int nextNode = AntColony[i].route.get(j+1);
+
+                    String s = GeneticCode.get(nextNode);
+                    char[] buf = new char[10];
+                    s.getChars(overlaps[currentNode][nextNode][0]+1,s.length(),buf,0);
+                    writer.write(buf);
+                }
+
+                writer.flush();
+                System.out.println("Записано в файл");
+            }
+        }
+
+    }
+    catch (IOException e) {
+        System.out.println("IOEXCEPTION occured");
+    }
+   }
+
+    /* Функция, проверяющая количество работающих
+     * в данный момент муравьев в колонии.
+     * Возвращает число остановившихся муравьев.
+     */
+    public int checkAnts(){
+        stoppedAnts = 0;
+        workingAnts = 0;
+        for (int i = 0; i < AntColony.length; i++){
+            if(AntColony[i].amAlive()){
+                workingAnts++;
+            }
+            else{
+                stoppedAnts++;
+            }
+        }
+        return stoppedAnts;
+
+    }
+
+    // Функция, которая оставляет феромоны при завершении потока муравья.
+    public void stopColony(){
+        for (int i = 0; i < AntColony.length; i++){
+            if(AntColony[i].isSuccessful()){
+                AntColony[i].putPheromones();
+            }
+            AntColony[i].stop();
+        }
+    }
 }
 
 
