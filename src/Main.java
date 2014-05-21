@@ -15,8 +15,8 @@ public class Main {
 
     public static void main(String [] args){
         final Ant[] AntColony;                                   // инициализация колонии муравьев.
-        final GGraph testGGraph ;                                // тестовый граф считанный из файла
-        AntColony = new Ant[15];                                 // содание колонии
+        final GGraph testGGraph ;               // тестовый граф считанный из файла
+        AntColony = new Ant[20];                                 // содание колонии
 
         // Создание окна отдельным потоком
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
