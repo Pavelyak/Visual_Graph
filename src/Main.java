@@ -15,7 +15,7 @@ public class Main {
 
     public static void main(String [] args){
         final Ant[] AntColony;                                   // инициализация колонии муравьев.
-        final GGraph testGGraph ;               // тестовый граф считанный из файла
+        final GGraph testGGraph ;                                // тестовый граф считанный из файла
         AntColony = new Ant[10];                                 // содание колонии
 
         // Создание окна отдельным потоком
@@ -25,7 +25,7 @@ public class Main {
             }
         });
     }
-    // Функция запускающая муравьев
+    // Функция запускающая бессознательное муравьев
     public static void unconsciousStart(GGraph testGGraph, Ant[] AntColony){
         Unconscious Un1 = new Unconscious(testGGraph, AntColony);    // создание бессознательного
         Un1.start();                                                 // старт потока

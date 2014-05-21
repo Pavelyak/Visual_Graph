@@ -7,13 +7,13 @@ import java.util.Random;
  */
 
 public class GNode  {
-    private static int  nodesCount = 0; // Счетчик числа вершин
-    public int id; // номер вершины
-    private int x; //координата х вершины
-    private int y; // координата у вершины
+    private static int  nodesCount = 0;         // Счетчик числа вершин
+    public int id;                              // номер вершины
+    private int x;                              // координата х вершины
+    private int y;                              // координата у вершины
     private volatile float pheromonLevel = 0;
-    ArrayList<Edge> listIn; // динамический массив ссылок на входящие вершин.
-    ArrayList<Edge> listOut; // динамический массив ссылок на исходящие вершины.
+    ArrayList<Edge> listIn;                     // динамический массив ссылок на входящие вершин.
+    ArrayList<Edge> listOut;                    // динамический массив ссылок на исходящие вершины.
 
     //конструктор
     public GNode(int x, int y){
@@ -44,17 +44,8 @@ public class GNode  {
 
     public int getId() {return id;}
 
-
-    /*public void printLinks(){                                  // печатает id всех входящих и выходящих вершины
-        for (int i = 0; i < listIn.size(); i++ ){
-            System.out.println(id + " in = " + listIn.get(i).id);
-        }
-        for (int i = 0; i < listOut.size(); i++ ){
-            System.out.println(id + " out = " + listOut.get(i).id);
-        }
-    }*/
-
-    public void addOut (GNode gNodeFinish){          // функция, добавляющая связи между двумя вершинами
+    // функция, добавляющая связи между двумя вершинами
+    public void addOut (GNode gNodeFinish){
         listOut.add(new Edge (gNodeFinish));         // добавляем out вершину NodeFinish  в массив искомого Node
         gNodeFinish.listIn.add(new Edge(this));      // заносим искомую вершину в in массив конечной вершины NodeFinish
     }

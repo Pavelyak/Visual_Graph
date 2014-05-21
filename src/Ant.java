@@ -109,8 +109,15 @@ public class Ant extends Thread {
             boolean inRoute;
             int j = 0;
             inRoute = false;
-            int currentNodeID = currentNode.listOut.get(i).getFinishGNode().getId();
-            if (route.size() !=0 && currentNode.listOut.size() != 0 ){
+            int currentNodeID = currentNode
+                                .listOut.get(i)
+                                .getFinishGNode()
+                                .getId()
+                                ;
+
+            if (route.size() !=0 &&
+                currentNode.listOut.size() != 0 ){
+
                 while (j != route.size()  ) {
                     if(currentNodeID == route.get(j)){
                         inRoute = true;
@@ -137,16 +144,20 @@ public class Ant extends Thread {
             fullprobablity = 0.0;
 
             for(int i = 0; i < allowedWay.size(); i++ ){
+
                 Edge currentEdge = currentNode.getConnectingEdge(allowedWay.get(i));
+
                 fullprobablity += (Math.pow(currentEdge.getPheromonLevel() , alpha))
-                                *(Math.pow(currentEdge.getWeight() ,beta));
+                                * (Math.pow(currentEdge.getWeight() ,beta));
             }
             System.out.println("fullprobablity" + fullprobablity);
 
             //считаем вероятность пойти в каждую вершинку ВЫРАВНИВАЕТСЯ К ЕДИНИЦЕ
             if (fullprobablity != 0){
                 for(int i = 0; i < allowedWay.size() ; i++ ){
+
                     Edge currentEdge = currentNode.getConnectingEdge(allowedWay.get(i));
+
                     probablities.add(probablities.get(i) + (Math.pow(currentEdge.getPheromonLevel(), alpha)/fullprobablity)
                                                          * (Math.pow(currentEdge.getWeight() , beta)));
                     }
@@ -158,13 +169,19 @@ public class Ant extends Thread {
 
             // Теперь по сгенерированному числу, смотрит, куда же пойдет муравей.
             for(int i = 0; i <= allowedWay.size() - 1 ; i++){
-                if( (numero >= probablities.get(i)) && (numero < probablities.get(i+1)) ){
+                if( (numero >= probablities.get(i)) &&
+                    (numero < probablities.get(i+1))) {
+
                     // если выбранная точка попадает на начальную,
                     // а заданный процент точек еще не пройден.
-                    if(currentNode.getConnectingEdge(allowedWay.get(i)).getFinishGNode().getId() == startNode.getId()
-                                                    && route.size() < nodesPercentToFinish*graph.getNodesCount() -1){
+                    if(currentNode.getConnectingEdge(allowedWay.get(i))
+                                                    .getFinishGNode()
+                                                    .getId() == startNode.getId() &&
+                       route.size() < nodesPercentToFinish*graph.getNodesCount() -1){
+
                         //если кроме начальной точки есть еще какая - то,
                         // то пробуем еще раз найти путь
+
                         if(allowedWay.size() > 1){
                             chooseNextNode();
                         }
@@ -176,8 +193,11 @@ public class Ant extends Thread {
                     }
                     // если прошел заданный процент пути пути
                     // и пришел в начальную точку
-                    else if(currentNode.getConnectingEdge(allowedWay.get(i)).getFinishGNode().getId() == startNode.getId()
-                         && route.size() >= nodesPercentToFinish*graph.getNodesCount() -1){
+                    else if(currentNode
+                            .getConnectingEdge(allowedWay.get(i))
+                            .getFinishGNode()
+                            .getId() == startNode.getId() &&
+                            route.size() >= nodesPercentToFinish*graph.getNodesCount() -1){
 
                         finished = true;
                         nextEdge = currentNode.getConnectingEdge(allowedWay.get(i));
@@ -201,8 +221,11 @@ public class Ant extends Thread {
     public void visitNextNode(){
         previousNode = currentNode;
         if (nextEdge != null){
+
             currentNode = nextEdge.getFinishGNode();
+
             route.add(currentNode.getId());
+
             routeLength += nextEdge.getWeight();
         }
     }
@@ -213,7 +236,9 @@ public class Ant extends Thread {
     // Функция оставления феромона на ребре
     public void putPheromones(){
         for(int i = 0; i< edgesVisited.size() ; i++){
-            edgesVisited.get(i).setPheromonLevel((float)(pheromoneMax*edgesVisited.size()-pheromoneMax/routeLength));
+            edgesVisited
+           .get(i)
+           .setPheromonLevel((float) (pheromoneMax * edgesVisited.size() - pheromoneMax / routeLength));
         }
     }
 

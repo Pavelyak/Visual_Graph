@@ -16,18 +16,15 @@ public class GGraph {
     private  int nodesCount;
     private  int linksCount;
 
-    //   borders: c/r within borders, infinity otherwise
-    //   not connected points: n/(r^a)
-    //   connected points: m*(r^b)
-    //   for initial tests m=n=1, a=b=1;
-    //parameters for adjusting graph//
+
+    // параметры для подсчета энергии//
     private double n;
     private double a;
     private double m;
     private double b;
     private double c;
 
-    //borders for graph*/
+    //Края для графа*/
     private int right_edge;
     private int left_edge;
     private int upper_edge;
@@ -67,7 +64,7 @@ public class GGraph {
     }
 
 
-    // Не случайный конструктор графа.
+    // конструктор графа.
     public GGraph (int nodesCount) {
         gNodesArray = new GNode[nodesCount];
         this.nodesCount = nodesCount;
@@ -126,8 +123,6 @@ public class GGraph {
         return this.gNodesArray[id];
     }
 
-
-
     public int getgNodesArraySize(){
         return gNodesArray.length;
     }
@@ -135,34 +130,6 @@ public class GGraph {
     public int getNodesCount(){
         return this.nodesCount;
     }  // возвращает число вершин в графе
-
-   /* private void check_unique(){
-    //TODO make it better;
-        for(int i = 0; i < nodesCount; ++i){
-            int y_i = gNodesArray[i].getY();
-            for(int j = 0; j < nodesCount; ++j){
-                int x_j = gNodesArray[j].getX();
-                int y_j = gNodesArray[j].getY();
-                if(x_i == x_j && y_i == y_j) {
-                    gNodesArray[j].setX(x_j+1);
-                }
-            }
-        }
-        int x_i = gNodesArray[i].getX();
-    }*/
-
-
-
-    /*public void printGraphStat(){
-
-        System.out.println("Graph has " + nodesCount + " nodes and " +  linksCount +" links");
-        System.out.println("Statistics for each node provided below");
-        for(int i = 0; i <= (nodesCount - 1); i++)
-            gNodesArray[i].printLinks();
-
-    }*/
-
-
 
     private double energy_to_line(int x1, int x2){
         double energy = this.c/((x1-x2)*(x1-x2));
@@ -180,19 +147,9 @@ public class GGraph {
     }
 
     private double energy(int i, int x, int y){
-        // energy:
-        //   borders: 1/r within borders, infinity otherwise
-        //   not connected points: n/(r^a)
-        //   connected points: m*(r^b)
-        //   for initial tests m=n=1, a=b=1;
-        //   sum of it does the energy for this point;
-        //   energy is >0;
-        //   if energy <0 its infinity;
-        // first check that all points are inside edges;
+        // проверка на то, чтобы все точки лежали внутри окошка (энергии не бесконечность)
 
-        // check borders
-        //int xi = gNodesArray[i].getX();
-        //int yi = gNodesArray[i].getY();
+
         double energy = 0;
         if (x <= this.left_edge){
             energy = Double.POSITIVE_INFINITY;
@@ -329,40 +286,21 @@ public class GGraph {
     }
 
     public void adjust() {
-        // here we will change coordinates of nodes to make graph look better=)
-        // simplest algorytm:
-        //   for every node
-        //   try moving it in 8 directions
-        //   calculating "energy"
-        //   move it in direction of lower energy
-        //   until it cannot be moved
-        //   repeat untill no node is moved
+        // ф-ия, которая расставляет вершины на графе:
+        // двигаем каждую вершину, ищем наименьшую энергию
+        // до тех пор пока ф-ия поиска наилучшего положения больше не двигает точки (возвращает 0)
 
-        // energy:
-        //   borders: 1/r within borders, infinity otherwise
-        //   not connected points: n/(r^a)
-        //   connected points: m*(r^b)
-        //   for initial tests m=n=1, a=b=1;
-        //   sum of it does the energy for this point;
-        //   energy is >0;
-        //   if energy <0 its infinity;
-        // first check that all points are inside edges;
+        // энергия:
+        // от краев: 1/r, бесконечность если за края уходит
+        // не связанные вершины: n/(r^a)
+        // связанные вершины: m*(r^b)
+        // m=n=1, a=b=1;
+        // сумма этих энергий дает энергию вершины
+
         int moved = 0;
         do {
             moved = global_adjust();
         } while (moved != 0);
 
-        /*for(int i = 0; i < nodesCount; ++i){
-            int x = gNodesArray[i].getX();
-            int y = gNodesArray[i].getY();
-            if(x<left_edge || x > right_edge || y < upper_edge || y > down_edge){
-                gNodesArray[i].setX(i);
-                gNodesArray[i].setY(i);
-            }
-        }*/
-        //       check_unique();
-
-        //int delta = 1;
-        //while (delta>0){
     }
 }

@@ -24,7 +24,7 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
     public JButton paintBtn;                // Кнопка отрисовки
     private TaskSprings taskSprings;
     /*private TaskAnts taskAnts;*/
-    private JProgressBar progressBar;
+    private JProgressBar progressBar;       // Прогресс в работе
     private TextField textIteration;
     private int iteration;
     private JPanel textPanel;
@@ -32,6 +32,7 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
 
     // Конструктор базового окна.
     public AppWindow(GGraph graph, Ant[] antColony) {
+
         // Инициализация окна,  переменных.
         super("An Ant visualization");
         this.graph = graph;
@@ -99,34 +100,19 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
          */
         @Override
         public void done() {
-            Toolkit.getDefaultToolkit().beep();
+            Toolkit
+           .getDefaultToolkit()
+           .beep();
+
             setCursor(null);                         //turn off the wait cursor
             progressBar.setVisible(false);
         }
     }
 
-    /*class TaskAnts extends SwingWorker<Void, Void> {
-        @Override
-        public Void doInBackground() {
-            int progress = 0;
-            //Initialize progress property.
-            setProgress(0);
-            Main.unconsciousStart(graph, antColony);  // Старт муравьев
-            return null;
-        }
-        *//*
-         * Executed in event dispatching thread
-         *//*
-        @Override
-        public void done() {
-            Toolkit.getDefaultToolkit().beep();
-            setCursor(null);                         //turn off the wait cursor
-            progressBar.setVisible(false);
-        }
-    }*/
-
-    public void actionPerformed(ActionEvent ae) {    // Функция, реализующая действия при нажатии на кнопку
+    // Функция, реализующая действия при нажатии на кнопку
+    public void actionPerformed(ActionEvent ae) {
         String str = ae.getActionCommand();
+
         if (str.equals("Начать отрисовку")) {
             paintBtn.setVisible(false);                      // Исчезновение кнопки
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -137,11 +123,13 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
             taskSprings.execute();
         }
         else if (str.equals("Алгоритм")) {
+
             progressBar.setIndeterminate(false);
             progressBar.setStringPainted(true);
             progressBar.setMinimum(0);
             progressBar.setMaximum(iteration);
             progressBar.setVisible(true);
+
             Unconscious un1 = new Unconscious(graph, antColony);         // создание бессознательного
             un1.start();                                                 // старт потока
             un1.addPropertyChangeListener(this);
@@ -150,6 +138,7 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
         }
         else if (str.equals("Выбрать файл")) {
             JFileChooser fileopen = new JFileChooser();
+
             int ret = fileopen.showDialog(null, "Открыть файл");
             if (ret == JFileChooser.APPROVE_OPTION) {
                 File file = fileopen.getSelectedFile();

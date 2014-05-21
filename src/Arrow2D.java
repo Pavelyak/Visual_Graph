@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
+/*Класс, описывающий направленную стрелку на графе*/
+
 
 public class Arrow2D {
    private Shape line;
