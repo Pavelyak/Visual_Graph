@@ -3,6 +3,7 @@ import java.nio.BufferUnderflowException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Scanner;
+import java.beans.*;
 
 
 /**
@@ -15,11 +16,12 @@ public class Unconscious extends Thread {
     GGraph graph;
     Ant[] AntColony;
     private static int iterationsNum;
-    private final int  iterationsLimit = 300;
+    public static int  iterationsLimit = 500;
     private int colonySize ;
     private int stoppedAnts;
     private int workingAnts;
     private boolean iterationFinished = false;
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this); // поддержка слушателей
     //ArrayList<Integer> maxRoute;
     //ArrayList<Integer> minRoute;
     Hashtable<Integer, String> GeneticCode;
@@ -57,6 +59,7 @@ public class Unconscious extends Thread {
         while(iterationsNum != iterationsLimit){
             try{
                 iterationsNum++;
+                setProgress(iterationsNum);
                 makeIteration();
                 evaporateEdges(graph);
 
@@ -287,8 +290,17 @@ public class Unconscious extends Thread {
         }
     }
     public static void setIterationsLimit(int iterationsLimit) {
-        iterationsLimit = iterationsLimit;
+        Unconscious.iterationsLimit = iterationsLimit;
     }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    public void setProgress(int progress){
+        pcs.firePropertyChange("progress", 0, progress);
+    }
+
 }
 
 

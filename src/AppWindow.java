@@ -8,13 +8,14 @@ import java.awt.*;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.event.*;
+import java.beans.*;
 import java.io.*;
 
 /**
  * Created by Ринат on 14.03.14.
  * Appwindow - окно, с которым происходит работа.
  */
-public class AppWindow extends JFrame implements ActionListener  {
+public class AppWindow extends JFrame implements ActionListener, PropertyChangeListener {
 
     private GraphWriter graphWriter;        // Canvas, в котором  отрисовывается граф.
     private GGraph graph;                   // Экземпляр графа
@@ -22,9 +23,12 @@ public class AppWindow extends JFrame implements ActionListener  {
     public JPanel mainPanel;                // Панель в которой размещаются все остальные компоненты
     public JButton paintBtn;                // Кнопка отрисовки
     private TaskSprings taskSprings;
+    /*private TaskAnts taskAnts;*/
     private JProgressBar progressBar;
     private TextField textIteration;
+    private int iteration;
     private JPanel textPanel;
+
 
     // Конструктор базового окна.
     public AppWindow(GGraph graph, Ant[] antColony) {
@@ -82,11 +86,6 @@ public class AppWindow extends JFrame implements ActionListener  {
         this.setVisible(true);                           // установка окна видимым для пользователя
     }
 
-    class MyWindowAdapter extends WindowAdapter {    // класс, реализующий пустой интерфейс слушателя окна
-        public void windowClosing(WindowEvent we) {  // реализация выхода, при нажатии на крестик
-            System.exit(0);
-        }
-    }
     // Класс, выполняющий задание - расположение вершин. Все делается в отдельном потоке.
     class TaskSprings extends SwingWorker<Void, Void> {
         @Override
@@ -106,6 +105,26 @@ public class AppWindow extends JFrame implements ActionListener  {
         }
     }
 
+    /*class TaskAnts extends SwingWorker<Void, Void> {
+        @Override
+        public Void doInBackground() {
+            int progress = 0;
+            //Initialize progress property.
+            setProgress(0);
+            Main.unconsciousStart(graph, antColony);  // Старт муравьев
+            return null;
+        }
+        *//*
+         * Executed in event dispatching thread
+         *//*
+        @Override
+        public void done() {
+            Toolkit.getDefaultToolkit().beep();
+            setCursor(null);                         //turn off the wait cursor
+            progressBar.setVisible(false);
+        }
+    }*/
+
     public void actionPerformed(ActionEvent ae) {    // Функция, реализующая действия при нажатии на кнопку
         String str = ae.getActionCommand();
         if (str.equals("Начать отрисовку")) {
@@ -118,15 +137,16 @@ public class AppWindow extends JFrame implements ActionListener  {
             taskSprings.execute();
         }
         else if (str.equals("Алгоритм")) {
-
+            progressBar.setIndeterminate(false);
             progressBar.setStringPainted(true);
             progressBar.setMinimum(0);
-            progressBar.setMaximum(100);
-            Main.unconsciousStart(graph, antColony);  // Старт муравьев
-            // Запуск отрисовки муравьев отдельным потоком
-            // чтобы программа реагировала на действие пользователя в GUI
-            Thread t = new Thread(graphWriter);
-            t.start();
+            progressBar.setMaximum(iteration);
+            progressBar.setVisible(true);
+            Unconscious un1 = new Unconscious(graph, antColony);         // создание бессознательного
+            un1.start();                                                 // старт потока
+            un1.addPropertyChangeListener(this);
+            //graphWriter.update(getGraphics());        // Отрисовка муравьев
+
         }
         else if (str.equals("Выбрать файл")) {
             JFileChooser fileopen = new JFileChooser();
@@ -140,7 +160,7 @@ public class AppWindow extends JFrame implements ActionListener  {
             // Перевод строки из поля в число
             String strInt = textIteration.getText();
             try {
-                int iteration = Integer.parseInt(strInt);
+                iteration = Integer.parseInt(strInt);
                 Unconscious.setIterationsLimit(iteration);  // Установка макс. лимита
                 textIteration.setEnabled(false);
             } catch (NumberFormatException e) {
@@ -148,6 +168,21 @@ public class AppWindow extends JFrame implements ActionListener  {
             }
         }
     }
+
+    class MyWindowAdapter extends WindowAdapter {    // класс, реализующий пустой интерфейс слушателя окна
+        public void windowClosing(WindowEvent we) {  // реализация выхода, при нажатии на крестик
+            System.exit(0);
+        }
+    }
+
+    public void propertyChange(PropertyChangeEvent evt) {
+        if ("progress" == evt.getPropertyName()) {
+            int progress = (Integer) evt.getNewValue();
+            progressBar.setValue(progress);
+        }
+    }
+
+
 
     //Функция, реализующая отрисовку графа при нажатии на кнопуу
     public void paintGraph(GGraph graph, Ant[] AntColony ) {
