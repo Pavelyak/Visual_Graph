@@ -286,6 +286,9 @@ public class Unconscious extends Thread {
             System.out.println("IOEXCEPTION occured");
         }
     }
+    public static void setIterationsLimit(int iterationsLimit) {
+        iterationsLimit = iterationsLimit;
+    }
 }
 
 
