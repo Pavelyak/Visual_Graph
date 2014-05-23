@@ -28,6 +28,7 @@ public class GGraph {
     private int upper_edge;
     private int down_edge;
 
+    //конструктор тестового графа
     public GGraph(int nodesCount, int linksCount ){
 
         gNodesArray = new GNode[nodesCount];

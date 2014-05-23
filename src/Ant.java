@@ -33,6 +33,8 @@ public class Ant extends Thread {
                                              начальная точка */
     ArrayList<Edge> edgesVisited;            /* Массив, в котором муравей сохраняет пройденные стрелки,
                                              чтобы оставить феромоны*/
+    ArrayList<Integer> allowedWay;           // массив с ID разрешенных вершинок для муравья
+    ArrayList<Double> probablities;          // массив, в котором считаются вероятности
 
 
     /* Конструктор муравья, в котором прописываем муравья,
@@ -41,6 +43,7 @@ public class Ant extends Thread {
     если муравей нашел замкнутый маршрут  - finished    */
 
     public Ant(GGraph graph){
+
         this.graph = graph;
         route = new ArrayList<Integer>();
         edgesVisited = new ArrayList<Edge>();
@@ -93,43 +96,15 @@ public class Ant extends Thread {
     /* функция выбора следующей вершинки для движения муравья     */
     public void chooseNextNode(){
 
-        ArrayList<Integer> allowedWay;              // массив с ID разрешенных вершинок для муравья
+
         allowedWay = new ArrayList<Integer>();
-        ArrayList<Double> probablities;             // массив, в котором считаются вероятности
+
         probablities = new ArrayList<Double>();
         probablities.add(0.0);                      // первый элемент в массиве - нуль (так проще реализовать)
-        double fullprobablity;
 
 
-        /* Указываем муравью, куда он может пойти из текущей вершины
-        * пройденные ранее вершины запрещаются.
-        */
+        checkAllowedWay();
 
-        for(int i = 0; i < currentNode.listOut.size() ; i++ ){
-            boolean inRoute;
-            int j = 0;
-            inRoute = false;
-            int currentNodeID = currentNode
-                                .listOut
-                                .get(i)
-                                .getFinishGNode()
-                                .getId();
-
-            if (route.size() !=0 &&
-                currentNode.listOut.size() != 0 ){
-
-                while (j != route.size()  ) {
-                    if(currentNodeID == route.get(j)){
-                        inRoute = true;
-                        break;
-                    }
-                    else j++;
-                }
-            }
-            if (inRoute == false){
-                allowedWay.add(currentNodeID);
-            }
-        }
 
         //Проверяем, можно ли вообще куда - то пойти.
         if(allowedWay.size() == 0){
@@ -139,34 +114,13 @@ public class Ant extends Thread {
         }
 
 
-        // теперь считаем знаменатель формулы вероятности пойти в каждую из точек
+        // теперь считаем  вероятности пойти в каждую из точек
         if(alive){
-            fullprobablity = 0.0;
-
-            for(int i = 0; i < allowedWay.size(); i++ ){
-
-                Edge currentEdge = currentNode.getConnectingEdge(allowedWay.get(i));
-
-                fullprobablity += (Math.pow(currentEdge.getPheromonLevel() , alpha))
-                                * (Math.pow(currentEdge.getWeight() ,beta));
-            }
-            System.out.println("fullprobablity" + fullprobablity);
-
-            //считаем вероятность пойти в каждую вершинку ВЫРАВНИВАЕТСЯ К ЕДИНИЦЕ
-            if (fullprobablity != 0){
-                for(int i = 0; i < allowedWay.size() ; i++ ){
-
-                    Edge currentEdge = currentNode.getConnectingEdge(allowedWay.get(i));
-
-                    probablities.add(probablities.get(i) + (Math.pow(currentEdge.getPheromonLevel(), alpha)/fullprobablity)
-                                                         * (Math.pow(currentEdge.getWeight() , beta)));
-                    }
-            }
+            calculateProbablities();
             // генератор случайных чисел
             Random rand = new Random();
             // сгенерировали случайное вещественное число от 0 до 1
             double numero = rand.nextFloat();
-
             // Теперь по сгенерированному числу, смотрит, куда же пойдет муравей.
             for(int i = 0; i <= allowedWay.size() - 1 ; i++){
                 if( (numero >= probablities.get(i)) &&
@@ -178,14 +132,11 @@ public class Ant extends Thread {
                                                     .getFinishGNode()
                                                     .getId() == startNode.getId() &&
                        route.size() < nodesPercentToFinish*graph.getNodesCount() -1){
-
                         //если кроме начальной точки есть еще какая - то,
                         // то пробуем еще раз найти путь
-
                         if(allowedWay.size() > 1){
                             chooseNextNode();
                         }
-
                         else{
                             alive = false;
                             this.stop();
@@ -274,5 +225,65 @@ public class Ant extends Thread {
 
     // Функция, сообщающая, успешный ли муравей.
     public boolean isSuccessful(){return finished;}
+
+    /* Указываем муравью, куда он может пойти из текущей вершины
+     * пройденные ранее вершины запрещаются.
+     */
+    public void checkAllowedWay(){
+
+
+        for(int i = 0; i < currentNode.listOut.size() ; i++ ){
+            boolean inRoute;
+            int j = 0;
+            inRoute = false;
+
+            int currentNodeID = currentNode
+                    .listOut
+                    .get(i)
+                    .getFinishGNode()
+                    .getId();
+
+            if (route.size() !=0 &&
+                    currentNode.listOut.size() != 0 ){
+
+                while (j != route.size()  ) {
+                    if(currentNodeID == route.get(j)){
+                        inRoute = true;
+                        break;
+                    }
+                    else j++;
+                }
+            }
+            if (inRoute == false){
+                allowedWay.add(currentNodeID);
+            }
+
+        }
+    }
+
+    public void calculateProbablities(){
+        double fullprobablity;
+        fullprobablity = 0.0;
+
+        for(int i = 0; i < allowedWay.size(); i++ ){
+
+            Edge currentEdge = currentNode.getConnectingEdge(allowedWay.get(i));
+
+            fullprobablity += (Math.pow(currentEdge.getPheromonLevel() , alpha))
+                    * (Math.pow(currentEdge.getWeight() ,beta));
+        }
+
+
+        //считаем вероятность пойти в каждую вершинку ВЫРАВНИВАЕТСЯ К ЕДИНИЦЕ
+        if (fullprobablity != 0){
+            for(int i = 0; i < allowedWay.size() ; i++ ){
+
+                Edge currentEdge = currentNode.getConnectingEdge(allowedWay.get(i));
+
+                probablities.add(probablities.get(i) + (Math.pow(currentEdge.getPheromonLevel(), alpha)/fullprobablity)
+                        * (Math.pow(currentEdge.getWeight() , beta)));
+            }
+        }
+    }
 }
 
