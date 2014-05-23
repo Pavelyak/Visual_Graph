@@ -45,22 +45,14 @@ public class Unconscious extends Thread {
         this.graph = graph;
         this.AntColony = AntColony;
         iterationsNum = 0;
-        colonySize = AntColony.length ;
 
+        colonySize = AntColony.length ;
         // считываем генетический код из файла
         GeneticCode = readCode();
         //Считываем перекрытия из файла
         overlaps = readOverlap();
         // Записываем шапки двухмерных массивов статистики
-        dataMax = new String[iterationsLimit+1][2];
-        dataMax[0][0] = source0;
-        dataMax[0][1] = source1;
-        dataMin = new String[iterationsLimit+1][2];
-        dataMin[0][0] = source0;
-        dataMin[0][1] = source2;
-        dataAvg = new String[iterationsLimit+1][2];
-        dataAvg[0][0] = source0;
-        dataAvg[0][1] = source3;
+        initialiseStatistics();
     }
 
     @Override
@@ -121,6 +113,8 @@ public class Unconscious extends Thread {
 
     }
 
+    /*Функция, считывающая соответствия номеру рида и его значению
+     *Возвращает хэш - таблицу */
     public static Hashtable readCode(){
         try {
             // ссылка на файл где будет лежать генетический код
@@ -144,6 +138,7 @@ public class Unconscious extends Thread {
         }
     }
 
+    // Считывает перекрытия между ридами в трехмерную матрицу
     public static Integer[][][] readOverlap(){
         try {
             // ссылка на файл где будет лежать перекрытия генетического кода
@@ -172,6 +167,7 @@ public class Unconscious extends Thread {
         }
     }
 
+    // рассчитывает статистику
     public void calculateStatistics(){
         long maxRouteLength = 1;
         long minRouteLength = AntColony[0].getRouteLength();
@@ -212,6 +208,7 @@ public class Unconscious extends Thread {
         dataAvg[iterationsNum][1]=String.valueOf(avgRouteLength);
     }
 
+    // Печатает статистику в файл
     public void writeStatistics(){
         try{
             BufferedWriter writer = new BufferedWriter(new FileWriter(Maximums,true));
@@ -249,6 +246,7 @@ public class Unconscious extends Thread {
         }
     }
 
+    // Устанавливает количество итераций алгоритма.
     public static void setIterationsLimit(int iterationsLimit) {
         Unconscious.iterationsLimit = iterationsLimit;
     }
@@ -261,6 +259,7 @@ public class Unconscious extends Thread {
         pcs.firePropertyChange("progress", 0, progress);
     }
 
+    // Инициализирует муравьиную колонию
     public void initialiseAnts(){
         for (int i = 0; i < AntColony.length; i++ ){
             System.out.println("вход в цикл создания муравьев");
@@ -270,6 +269,7 @@ public class Unconscious extends Thread {
         }
     }
 
+    // Функиця, печатает маршруты успешных муравьев в файл
     public void printSuccessfulAntsWays(){
         try{
         BufferedWriter writer;
@@ -341,6 +341,19 @@ public class Unconscious extends Thread {
             }
             AntColony[i].stop();
         }
+    }
+
+    // Печатает шапку файлов со статистикой
+    public void initialiseStatistics(){
+        dataMax = new String[iterationsLimit+1][2];
+        dataMax[0][0] = source0;
+        dataMax[0][1] = source1;
+        dataMin = new String[iterationsLimit+1][2];
+        dataMin[0][0] = source0;
+        dataMin[0][1] = source2;
+        dataAvg = new String[iterationsLimit+1][2];
+        dataAvg[0][0] = source0;
+        dataAvg[0][1] = source3;
     }
 }
 
