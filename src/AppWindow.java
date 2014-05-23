@@ -1,12 +1,7 @@
 
 
-import javafx.scene.control.ProgressBar;
-
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.Graphics2D;
-import java.awt.Graphics;
 import java.awt.event.*;
 import java.beans.*;
 import java.io.*;
@@ -21,13 +16,15 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
     private GGraph graph;                   // Экземпляр графа
     private Ant[] antColony;                // Экземпляр колонии
     public JPanel mainPanel;                // Панель в которой размещаются все остальные компоненты
+    public JPanel buttonsPanel;             // Панель кнопок
+    private JPanel textPanel;               // Панель текстовых полей
     public JButton paintBtn;                // Кнопка отрисовки
-    private TaskSprings taskSprings;
-    /*private TaskAnts taskAnts;*/
+    public JButton algoritmBtn;             // Кнопка запуска алгоритма
+    public JButton fileBtn;                 // Кнопка выбора файла
+    private TaskSprings taskSprings;        // Задание - отрисовать пружины. Должно выполняться в отдельном потоке.
     private JProgressBar progressBar;       // Прогресс в работе
-    private TextField textIteration;
-    private int iteration;
-    private JPanel textPanel;
+    private TextField iTextField;
+    private int iterationsLimit;
 
 
     // Конструктор базового окна.
@@ -37,54 +34,25 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
         super("An Ant visualization");
         this.graph = graph;
         this.antColony = antColony;
-
-        addWindowListener(new MyWindowAdapter());        // регистрация оконного слушателя, нужный при закрытии окна.
         this.setSize(900, 700);                          // установка размера
 
         //Создание главной панели
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());         // Установка менеджера компоновки.
 
-        // создание кнопочной панели
-        JPanel buttonsPanel = new JPanel(new FlowLayout());
-
-        // Создание paintBtn - кнопка отрисовки
-        paintBtn = new JButton("Начать отрисовку");
-        buttonsPanel.add(paintBtn);
-        paintBtn.addActionListener(this);                // Добавляем слушателя к кнопке, который следит за нажатием.
-        paintBtn.setFocusable(false);                    // На кнопку не наведен фокус.
-
-        //Кнопка алгоритма
-        JButton btn = new JButton("Алгоритм");
-        buttonsPanel.add(btn);
-        btn.addActionListener(this);
-        btn.setFocusable(false);
-
-        //Кнопка выбора файла
-        JButton btnFile = new JButton("Выбрать файл");
-        buttonsPanel.add(btnFile);
-        btnFile.addActionListener(this);
-        btnFile.setFocusable(false);
-
+        createButtons();
+        createTextFields();
         //ProgressBar
         progressBar = new JProgressBar();
+
         mainPanel.add(progressBar, BorderLayout.SOUTH);
-
-        mainPanel.add(buttonsPanel, BorderLayout.NORTH); // Добавляем кнопочную панель вверху окна
-
-        //Текстовые поля
-        textPanel = new JPanel(new GridLayout(20, 1));     // 20 строк, 1 столбец в менеджере компоновки
-        Label lblIteration = new Label("Iteration");
-        textIteration = new TextField();
-        textIteration.addActionListener(this);
-        textPanel.add(lblIteration);
-        textPanel.add(textIteration);
-
+        mainPanel.add(buttonsPanel, BorderLayout.NORTH);   // Добавляем кнопочную панель вверху окна
         mainPanel.add(textPanel, BorderLayout.EAST);       // На западе
 
         // финальные шаги
-        add(mainPanel);                                  // Добавление панели к окну
-        this.setVisible(true);                           // установка окна видимым для пользователя
+        add(mainPanel);                                            // Добавление панели к окну
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);   // Выход при нажатии на крестик
+        this.setVisible(true);                                     // Установка окна видимым для пользователя
     }
 
     // Класс, выполняющий задание - расположение вершин. Все делается в отдельном потоке.
@@ -100,10 +68,9 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
          */
         @Override
         public void done() {
-            Toolkit
+            /*Toolkit
            .getDefaultToolkit()
-           .beep();
-
+           .beep();*/
             setCursor(null);                         //turn off the wait cursor
             progressBar.setVisible(false);
         }
@@ -111,59 +78,22 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
 
     // Функция, реализующая действия при нажатии на кнопку
     public void actionPerformed(ActionEvent ae) {
-        String str = ae.getActionCommand();
-
-        if (str.equals("Начать отрисовку")) {
-            paintBtn.setVisible(false);                      // Исчезновение кнопки
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            progressBar.setIndeterminate(true);              // Бесконечный ПрогрессБар
-
-            //Выполнение задания - отрисовки
-            taskSprings = new TaskSprings();
-            taskSprings.execute();
+        if (ae.getSource() == paintBtn) {
+            paintBtnProcessing();
         }
-        else if (str.equals("Алгоритм")) {
-
-            progressBar.setIndeterminate(false);
-            progressBar.setStringPainted(true);
-            progressBar.setMinimum(0);
-            progressBar.setMaximum(iteration);
-            progressBar.setVisible(true);
-
-            Unconscious un1 = new Unconscious(graph, antColony);         // создание бессознательного
-            un1.start();                                                 // старт потока
-            un1.addPropertyChangeListener(this);
-            graphWriter.update(getGraphics());        // Отрисовка муравьев
-
+        else if (ae.getSource() == algoritmBtn) {
+            algortmBtnProcessing();
         }
-        else if (str.equals("Выбрать файл")) {
-            JFileChooser fileopen = new JFileChooser();
-
-            int ret = fileopen.showDialog(null, "Открыть файл");
-            if (ret == JFileChooser.APPROVE_OPTION) {
-                File file = fileopen.getSelectedFile();
-                graph = GGraph.myread(file);
-            }
+        else if (ae.getSource() == fileBtn) {
+            fileBtnProcessing();
         }
-        else if (ae.getSource() == textIteration){
-            // Перевод строки из поля в число
-            String strInt = textIteration.getText();
-            try {
-                iteration = Integer.parseInt(strInt);
-                Unconscious.setIterationsLimit(iteration);  // Установка макс. лимита
-                textIteration.setEnabled(false);
-            } catch (NumberFormatException e) {
-                System.err.println("Неверный формат строки!");
-            }
+        else if (ae.getSource() == iTextField) {
+            iTextFieldProcessing();
         }
     }
 
-    class MyWindowAdapter extends WindowAdapter {    // класс, реализующий пустой интерфейс слушателя окна
-        public void windowClosing(WindowEvent we) {  // реализация выхода, при нажатии на крестик
-            System.exit(0);
-        }
-    }
-
+    // Функция, получающая на вход прогресс длительной задачи
+    // Устанавливает процент выполнения данной задачи на прогрессбаре
     public void propertyChange(PropertyChangeEvent evt) {
         if ("progress" == evt.getPropertyName()) {
             int progress = (Integer) evt.getNewValue();
@@ -175,15 +105,89 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
 
     //Функция, реализующая отрисовку графа при нажатии на кнопуу
     public void paintGraph(GGraph graph, Ant[] AntColony ) {
-
         // создаем graphWriter - Canvas на котором происходит отрисовка
         int fringe = 40;                                      // размер рамки
-        graphWriter = new GraphWriter(800, 600, fringe,       // Размер области рисования. Он пока не масшабируется
+        graphWriter = new GraphWriter(800, 600, fringe,       // Размер области рисования.
                                       graph, AntColony);      // Экземпляры класса графа и муравьиной колонии
 
         // Добавление поля для отрисовки graphwriter (Canvas).
         mainPanel.add(graphWriter, BorderLayout.CENTER);      // Добавляем в центр панели
         mainPanel.revalidate();                               // Обновление панели
+    }
+
+    private void algortmBtnProcessing() {
+        progressBar.setIndeterminate(false);
+        progressBar.setStringPainted(true);
+        progressBar.setMinimum(0);
+        progressBar.setMaximum(iterationsLimit);
+        progressBar.setVisible(true);
+
+        Unconscious un1 = new Unconscious(graph, antColony);         // создание бессознательного
+        un1.start();                                                 // старт потока
+        un1.addPropertyChangeListener(this);
+        graphWriter.update(getGraphics());                           // Отрисовка муравьев
+    }
+    private void fileBtnProcessing() {
+        JFileChooser fileopen = new JFileChooser();
+
+        int ret = fileopen.showDialog(null, "Открыть файл");
+        if (ret == JFileChooser.APPROVE_OPTION) {
+            File file = fileopen.getSelectedFile();
+            graph = GGraph.myread(file);
+        }
+    }
+
+    private void paintBtnProcessing() {
+        paintBtn.setVisible(false);                      // Исчезновение кнопки
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        progressBar.setIndeterminate(true);              // Бесконечный ПрогрессБар
+
+        //Выполнение задания - отрисовки
+        taskSprings = new TaskSprings();
+        taskSprings.execute();
+    }
+
+    private void iTextFieldProcessing() {
+        // Перевод строки из поля в число
+        String strInt = iTextField.getText();
+        try {
+            iterationsLimit = Integer.parseInt(strInt);
+            Unconscious.setIterationsLimit(iterationsLimit);  // Установка макс. лимита
+            iTextField.setEnabled(false);
+        } catch (NumberFormatException e) {
+            System.err.println("Неверный формат строки!");
+        }
+    }
+
+    private void createTextFields() {
+        //Текстовые поля
+        textPanel = new JPanel(new GridLayout(20, 1));     // 20 строк, 1 столбец в менеджере компоновки
+        Label lblIteration = new Label("Iteration");
+        iTextField = new TextField();
+        iTextField.addActionListener(this);
+        textPanel.add(lblIteration);
+        textPanel.add(iTextField);
+    }
+    private void createButtons() {
+        // создание кнопочной панели
+        buttonsPanel = new JPanel(new FlowLayout());
+        // Создание paintBtn - кнопка отрисовки
+        paintBtn = new JButton("Начать отрисовку");
+        buttonsPanel.add(paintBtn);
+        paintBtn.addActionListener(this);                // Добавляем слушателя к кнопке, который следит за нажатием.
+        paintBtn.setFocusable(false);                    // На кнопку не наведен фокус.
+
+        //Кнопка алгоритма
+        algoritmBtn = new JButton("Алгоритм");
+        buttonsPanel.add(algoritmBtn);
+        algoritmBtn.addActionListener(this);
+        algoritmBtn.setFocusable(false);
+
+        //Кнопка выбора файла
+        fileBtn = new JButton("Выбрать файл");
+        buttonsPanel.add(fileBtn);
+        fileBtn.addActionListener(this);
+        fileBtn.setFocusable(false);
     }
 }
 
