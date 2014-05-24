@@ -15,12 +15,12 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
     private GraphWriter graphWriter;        // Canvas, в котором  отрисовывается граф.
     private GGraph graph;                   // Экземпляр графа
     private Ant[] antColony;                // Экземпляр колонии
-    public JPanel mainPanel;                // Панель в которой размещаются все остальные компоненты
-    public JPanel buttonsPanel;             // Панель кнопок
+    private JPanel mainPanel;                // Панель в которой размещаются все остальные компоненты
+    private JPanel buttonsPanel;             // Панель кнопок
     private JPanel textPanel;               // Панель текстовых полей
-    public JButton paintBtn;                // Кнопка отрисовки
-    public JButton algoritmBtn;             // Кнопка запуска алгоритма
-    public JButton fileBtn;                 // Кнопка выбора файла
+    private JButton paintBtn;                // Кнопка отрисовки
+    private JButton algoritmBtn;             // Кнопка запуска алгоритма
+    private JButton fileBtn;                 // Кнопка выбора файла
     private TaskSprings taskSprings;        // Задание - отрисовать пружины. Должно выполняться в отдельном потоке.
     private JProgressBar progressBar;       // Прогресс в работе
     private TextField iTextField;
@@ -102,7 +102,6 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
     }
 
 
-
     //Функция, реализующая отрисовку графа при нажатии на кнопуу
     public void paintGraph(GGraph graph, Ant[] AntColony ) {
         // создаем graphWriter - Canvas на котором происходит отрисовка
@@ -115,6 +114,8 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
         mainPanel.revalidate();                               // Обновление панели
     }
 
+
+    // ButtonProcessing функции
     private void algortmBtnProcessing() {
         progressBar.setIndeterminate(false);
         progressBar.setStringPainted(true);
@@ -125,8 +126,9 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
         Unconscious un1 = new Unconscious(graph, antColony);         // создание бессознательного
         un1.start();                                                 // старт потока
         un1.addPropertyChangeListener(this);
-        graphWriter.update(getGraphics());                           // Отрисовка муравьев
+        //new Thread(graphWriter).start();                           // Отрисовка муравьев
     }
+
     private void fileBtnProcessing() {
         JFileChooser fileopen = new JFileChooser();
 
@@ -159,6 +161,8 @@ public class AppWindow extends JFrame implements ActionListener, PropertyChangeL
         }
     }
 
+
+    // Create функции
     private void createTextFields() {
         //Текстовые поля
         textPanel = new JPanel(new GridLayout(20, 1));     // 20 строк, 1 столбец в менеджере компоновки
